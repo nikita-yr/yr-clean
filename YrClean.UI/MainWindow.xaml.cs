@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using YrClean.Core.Models;
 using YrClean.Core.Services;
+using MessageBox = System.Windows.MessageBox;
 
 namespace YrClean.UI;
 
 public partial class MainWindow : Window
 {
-    [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+    private static readonly TimeSpan RescanDelay = TimeSpan.FromSeconds(3);
+
+    private static readonly SolidColorBrush ContextHighlightBrush = CreateFrozenBrush(0x33, 0x00, 0xA2, 0xFF);
 
     private int _minAgeDays = 14;
     private List<string> _lastScanRoots = new();
@@ -25,165 +22,173 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        SourceInitialized += (_, _) => UseDarkMode();
+        SourceInitialized += (_, _) => DarkTitleBar.Apply(this);
         Loaded += (_, _) => RunScan();
-    }
-
-    private void UseDarkMode()
-    {
-        var handle = new WindowInteropHelper(this).Handle;
-        int useDarkMode = 1;
-        DwmSetWindowAttribute(handle, 20, ref useDarkMode, sizeof(int));
     }
 
     private void RunScan()
     {
         var settings = SettingsService.Load();
         _minAgeDays = settings.MinAgeDays;
-        UpdateCleanButtonLabel();
+        CleanButton.Content = $"Clean > {_minAgeDays} days";
 
         var scanner = new FolderScanner();
-        var sources = CacheSourceProvider.GetKnownSources()
-            .Concat(AutoDiscoveryScanner.Discover())
-            .ToList();
+        var sources = CacheSourceProvider.GetKnownSources().Concat(AutoDiscoveryScanner.Discover());
         var nodes = new List<CacheSourceNode>();
         var roots = new List<string>();
 
         foreach (var source in sources)
         {
-            var resolvedPaths = source.ResolvePaths()
-                .Where(path => !ExclusionFilter.IsExcluded(path, settings.ExcludedPaths))
-                .ToList();
+            var resolvedPaths = source.ResolvePaths(settings.ExcludedPaths);
             if (resolvedPaths.Count == 0)
                 continue;
 
-            var allGroups = new List<CacheGroup>();
-            foreach (var path in resolvedPaths)
-            {
-                allGroups.AddRange(scanner.ScanGrouped(path));
-                roots.Add(path);
-            }
+            roots.AddRange(resolvedPaths);
+            var allGroups = resolvedPaths.SelectMany(scanner.ScanGrouped).ToList();
 
             if (allGroups.Sum(group => group.TotalSizeBytes) == 0)
                 continue;
 
-            nodes.Add(new CacheSourceNode(source, allGroups, resolvedPaths.First()));
+            nodes.Add(new CacheSourceNode(source, allGroups, resolvedPaths[0]));
         }
 
-        nodes = nodes.OrderByDescending(node => node.TotalSizeBytes).ToList();
-
-        _lastScanNodes = nodes;
+        _lastScanNodes = nodes.OrderByDescending(node => node.TotalSizeBytes).ToList();
         _lastScanRoots = roots;
-        ResultsTree.ItemsSource = nodes;
+        ResultsTree.ItemsSource = _lastScanNodes;
 
-        foreach (var node in nodes) node.IsSelected = true;
+        SetAllSelected(true);
         SelectAllCheck.IsChecked = true;
     }
 
-    private void UpdateCleanButtonLabel()
-    {
-        CleanButton.Content = $"Clean > {_minAgeDays} days";
-    }
-
-    private void SelectAllCheck_Checked(object sender, RoutedEventArgs e)
+    private void SetAllSelected(bool isSelected)
     {
         foreach (var node in _lastScanNodes)
-            node.IsSelected = true;
+            node.IsSelected = isSelected;
     }
 
-    private void SelectAllCheck_Unchecked(object sender, RoutedEventArgs e)
-    {
-        foreach (var node in _lastScanNodes)
-            node.IsSelected = false;
-    }
+    private void SelectAllCheck_Checked(object sender, RoutedEventArgs e) => SetAllSelected(true);
+
+    private void SelectAllCheck_Unchecked(object sender, RoutedEventArgs e) => SetAllSelected(false);
 
     private void CleanButton_Click(object sender, RoutedEventArgs e)
     {
-        var selectedFiles = _lastScanNodes
+        var selectedFiles = GetSelectedFilePaths();
+        if (selectedFiles.Count == 0)
+        {
+            ShowInfo("No files selected.", "Clean");
+            return;
+        }
+
+        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays);
+        if (classification.TotalCount == 0)
+        {
+            ShowInfo(
+                $"None of the {selectedFiles.Count} selected files can be deleted right now.\n\n" +
+                BuildClassificationSummary(classification, forConfirm: false),
+                "Nothing to clean");
+            return;
+        }
+
+        if (!ConfirmCleanup(classification))
+            return;
+
+        if (!NeedsElevatedHelper(classification))
+        {
+            // Everything is deleted in this process, so the summary reports exact final numbers.
+            var allFiles = classification.DeletableNow.Concat(classification.NeedsAdmin).ToList();
+            var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays);
+            CleanupLog.Write("manual", result);
+
+            ShowInfo(BuildDeleteSummary(result, allFiles.Count), "Cleanup complete");
+            RunScan();
+            return;
+        }
+
+        var partialResult = SafeDeleteService.DeleteFiles(classification.DeletableNow, _lastScanRoots, _minAgeDays);
+        CleanupLog.Write("manual", partialResult);
+
+        var adminCount = classification.NeedsAdmin.Count;
+        var helperNote = StartElevatedCleanup(classification.NeedsAdmin)
+            ? $"\n\n{adminCount} more files need administrator rights - finishing in the background. " +
+              "The Windows notification will report how many of them were deleted."
+            : $"\n\n{adminCount} files that need administrator rights were not deleted (UAC prompt cancelled).";
+
+        ShowInfo(BuildDeleteSummary(partialResult, classification.DeletableNow.Count) + helperNote, "Cleanup complete");
+
+        // Give the elevated helper a moment before refreshing the tree
+        ScheduleRescan();
+    }
+
+    // Only a non-admin session has to hand files off to a separate elevated process
+    private static bool NeedsElevatedHelper(ClassificationResult classification) =>
+        classification.NeedsAdmin.Count > 0 && !ElevatedProcess.IsCurrentProcessElevated;
+
+    private string BuildDeleteSummary(DeleteResult result, int attemptedCount)
+    {
+        var lines = new List<string>
+        {
+            $"Deleted: {result.DeletedCount} of {attemptedCount} files",
+            $"Freed: {SizeFormatter.Format(result.FreedBytes)}"
+        };
+
+        if (result.SkippedCount > 0)
+        {
+            lines.Add("");
+            lines.Add($"Not deleted: {result.SkippedCount}");
+            AddSkipReasons(lines, result);
+            AddIfAny(lines, result.SkippedAccessDeniedCount, "access denied");
+            AddIfAny(lines, result.SkippedOtherErrorCount, "other errors");
+            lines.Add("Details: autoclean.log");
+        }
+
+        return string.Join("\n", lines);
+    }
+
+    private List<string> GetSelectedFilePaths() =>
+        _lastScanNodes
             .SelectMany(source => source.Children)
             .SelectMany(group => group.Children)
             .Where(file => file.IsSelected)
             .Select(file => file.FullPath)
             .ToList();
 
-        if (selectedFiles.Count == 0)
-        {
-            System.Windows.MessageBox.Show("No files selected.", "Clean", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
-        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays);
-        var totalCount = classification.DeletableNow.Count + classification.NeedsAdmin.Count;
-
-        if (totalCount == 0)
-        {
-            System.Windows.MessageBox.Show(
-                $"None of the {selectedFiles.Count} selected files can be deleted right now.\n\n" +
-                BuildClassificationSummary(classification, forConfirm: false),
-                "Nothing to clean",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-            return;
-        }
-
-        var confirm = System.Windows.MessageBox.Show(
-            $"{totalCount} files will be deleted, freeing " +
-            $"{SizeFormatter.Format(classification.DeletableNowBytes + classification.NeedsAdminBytes)}.\n\n" +
+    private bool ConfirmCleanup(ClassificationResult classification)
+    {
+        var confirm = MessageBox.Show(
+            $"{classification.TotalCount} files will be deleted, freeing " +
+            $"{SizeFormatter.Format(classification.TotalBytes)}.\n\n" +
             BuildClassificationSummary(classification, forConfirm: true) +
             "\nProceed?",
             "Confirm cleanup",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
-        if (confirm != MessageBoxResult.Yes)
-            return;
+        return confirm == MessageBoxResult.Yes;
+    }
 
-        var result = SafeDeleteService.DeleteFiles(
-            classification.DeletableNow,
-            _lastScanRoots,
-            _minAgeDays);
-
-        if (classification.NeedsAdmin.Count > 0)
+    // Hands admin-only files to an elevated copy of the app via a temp manifest.
+    // Returns false if the user cancelled the UAC prompt.
+    private bool StartElevatedCleanup(List<string> filePaths)
+    {
+        var request = new PendingCleanRequest
         {
-            var request = new PendingCleanRequest
-            {
-                FilePaths = classification.NeedsAdmin,
-                AllowedRoots = _lastScanRoots,
-                MinAgeDays = _minAgeDays
-            };
-            var manifestPath = PendingCleanRequestService.Save(request);
-
-            try
-            {
-                var psi = new ProcessStartInfo(Environment.ProcessPath!)
-                {
-                    UseShellExecute = true,
-                    Verb = "runas"
-                };
-                psi.ArgumentList.Add("--elevated-clean");
-                psi.ArgumentList.Add(manifestPath);
-                Process.Start(psi);
-            }
-            catch (System.ComponentModel.Win32Exception)
-            {
-                PendingCleanRequestService.Delete(manifestPath);
-                // User cancelled UAC; the non-admin portion is already deleted.
-            }
-        }
-
-        System.Windows.MessageBox.Show(
-            $"Deleted: {result.DeletedCount} files\nFreed: {SizeFormatter.Format(result.FreedBytes)}" +
-            (classification.NeedsAdmin.Count > 0
-                ? $"\n\n{classification.NeedsAdmin.Count} more files need administrator rights - finishing in the background (check the Windows notification)."
-                : ""),
-            "Cleanup complete",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
-
-        var rescanTimer = new System.Windows.Threading.DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(3)
+            FilePaths = filePaths,
+            AllowedRoots = _lastScanRoots,
+            MinAgeDays = _minAgeDays
         };
+        var manifestPath = PendingCleanRequestService.Save(request);
+
+        if (ElevatedProcess.TryStartSelf(CommandLineSwitches.ElevatedClean, manifestPath))
+            return true;
+
+        // User cancelled UAC; the non-admin portion is already deleted.
+        PendingCleanRequestService.Delete(manifestPath);
+        return false;
+    }
+
+    private void ScheduleRescan()
+    {
+        var rescanTimer = new DispatcherTimer { Interval = RescanDelay };
         rescanTimer.Tick += (_, _) =>
         {
             rescanTimer.Stop();
@@ -192,43 +197,33 @@ public partial class MainWindow : Window
         rescanTimer.Start();
     }
 
-    private string BuildClassificationSummary(SafeDeleteService.ClassificationResult classification, bool forConfirm)
+    private string BuildClassificationSummary(ClassificationResult classification, bool forConfirm)
     {
         var lines = new List<string>();
 
-        if (forConfirm)
+        if (forConfirm && NeedsElevatedHelper(classification))
         {
             lines.Add($"- {classification.DeletableNow.Count} deletable now ({SizeFormatter.Format(classification.DeletableNowBytes)})");
-            if (classification.NeedsAdmin.Count > 0)
-                lines.Add($"- {classification.NeedsAdmin.Count} need administrator rights ({SizeFormatter.Format(classification.NeedsAdminBytes)}) - one UAC prompt");
+            lines.Add($"- {classification.NeedsAdmin.Count} need administrator rights ({SizeFormatter.Format(classification.NeedsAdminBytes)}) - one UAC prompt");
         }
 
-        if (classification.SkippedTooRecentCount > 0) lines.Add($"- {classification.SkippedTooRecentCount} too recent (accessed within {_minAgeDays} days)");
-        if (classification.SkippedProtectedCount > 0) lines.Add($"- {classification.SkippedProtectedCount} protected file type");
-        if (classification.SkippedReparsePointCount > 0) lines.Add($"- {classification.SkippedReparsePointCount} reparse point / symlink");
-        if (classification.SkippedOutsideRootCount > 0) lines.Add($"- {classification.SkippedOutsideRootCount} outside allowed folders");
-        if (classification.SkippedMissingCount > 0) lines.Add($"- {classification.SkippedMissingCount} already gone");
-        if (classification.SkippedInUseCount > 0) lines.Add($"- {classification.SkippedInUseCount} in use / locked by another process");
-
+        AddSkipReasons(lines, classification);
         return string.Join("\n", lines);
     }
 
-    private void RestartElevated()
+    private void AddSkipReasons(List<string> lines, SkipStatistics stats)
     {
-        try
-        {
-            var psi = new ProcessStartInfo(Environment.ProcessPath!)
-            {
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-            Process.Start(psi);
-            System.Windows.Application.Current.Shutdown();
-        }
-        catch (System.ComponentModel.Win32Exception)
-        {
-            // User cancelled the UAC prompt; keep the current session open.
-        }
+        AddIfAny(lines, stats.SkippedTooRecentCount, $"too recent (accessed within {_minAgeDays} days)");
+        AddIfAny(lines, stats.SkippedProtectedCount, "protected file type");
+        AddIfAny(lines, stats.SkippedReparsePointCount, "reparse point / symlink");
+        AddIfAny(lines, stats.SkippedOutsideRootCount, "outside allowed folders");
+        AddIfAny(lines, stats.SkippedMissingCount, "already gone");
+        AddIfAny(lines, stats.SkippedInUseCount, "in use / locked by another process");
+    }
+
+    private static void AddIfAny(List<string> lines, int count, string description)
+    {
+        if (count > 0) lines.Add($"- {count} {description}");
     }
 
     private void ScheduleButton_Click(object sender, RoutedEventArgs e)
@@ -240,17 +235,10 @@ public partial class MainWindow : Window
 
     private void AddToExclusions_Click(object sender, RoutedEventArgs e)
     {
-        var item = GetClickedItem(sender);
-        string? path = item switch
-        {
-            CacheGroupNode group => group.FullFolderPath,
-            CacheSourceNode source => source.FullFolderPath,
-            _ => null
-        };
-
-        if (path == null)
+        if (GetClickedItem(sender) is not FolderNodeBase folder)
             return;
 
+        var path = folder.FullFolderPath;
         var settings = SettingsService.Load();
         if (!settings.ExcludedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
         {
@@ -258,57 +246,29 @@ public partial class MainWindow : Window
             SettingsService.Save(settings);
         }
 
-        System.Windows.MessageBox.Show(
-            $"Added to exclusions:\n{path}",
-            "Exclusions",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+        ShowInfo($"Added to exclusions:\n{path}", "Exclusions");
         RunScan();
-    }
-
-    private object? GetClickedItem(object sender)
-    {
-        if (sender is MenuItem menuItem &&
-            menuItem.Parent is ContextMenu contextMenu &&
-            contextMenu.PlacementTarget is FrameworkElement target)
-        {
-            return target.DataContext;
-        }
-        return null;
     }
 
     private void OpenLocation_Click(object sender, RoutedEventArgs e)
     {
-        var item = GetClickedItem(sender);
-
-        switch (item)
+        switch (GetClickedItem(sender))
         {
             case CacheFileNode file:
                 Process.Start("explorer.exe", $"/select,\"{file.FullPath}\"");
                 break;
-            case CacheGroupNode group:
-                Process.Start("explorer.exe", $"\"{group.FullFolderPath}\"");
-                break;
-            case CacheSourceNode source:
-                Process.Start("explorer.exe", $"\"{source.FullFolderPath}\"");
+            case FolderNodeBase folder:
+                Process.Start("explorer.exe", $"\"{folder.FullFolderPath}\"");
                 break;
         }
     }
 
     private void SearchWeb_Click(object sender, RoutedEventArgs e)
     {
-        var item = GetClickedItem(sender);
-        string? name = item switch
-        {
-            CacheFileNode file => file.Name,
-            CacheGroupNode group => group.Name,
-            CacheSourceNode source => source.Name,
-            _ => null
-        };
+        if (GetClickedItem(sender) is not SelectableNodeBase node)
+            return;
 
-        if (name == null) return;
-
-        var query = Uri.EscapeDataString(name);
+        var query = Uri.EscapeDataString(node.Name);
         Process.Start(new ProcessStartInfo
         {
             FileName = $"https://www.google.com/search?q={query}",
@@ -318,17 +278,28 @@ public partial class MainWindow : Window
 
     private void ContextMenu_Opened(object sender, RoutedEventArgs e)
     {
-        if (sender is ContextMenu menu && menu.PlacementTarget is Grid grid)
-        {
-            grid.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x33, 0x00, 0xA2, 0xFF));
-        }
+        if (sender is ContextMenu { PlacementTarget: Grid grid })
+            grid.Background = ContextHighlightBrush;
     }
 
     private void ContextMenu_Closed(object sender, RoutedEventArgs e)
     {
-        if (sender is ContextMenu menu && menu.PlacementTarget is Grid grid)
-        {
+        if (sender is ContextMenu { PlacementTarget: Grid grid })
             grid.ClearValue(Grid.BackgroundProperty);
-        }
+    }
+
+    private static object? GetClickedItem(object sender) =>
+        sender is MenuItem { Parent: ContextMenu { PlacementTarget: FrameworkElement target } }
+            ? target.DataContext
+            : null;
+
+    private static void ShowInfo(string message, string title) =>
+        MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+
+    private static SolidColorBrush CreateFrozenBrush(byte a, byte r, byte g, byte b)
+    {
+        var brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(a, r, g, b));
+        brush.Freeze();
+        return brush;
     }
 }

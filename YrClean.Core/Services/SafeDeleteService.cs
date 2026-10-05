@@ -1,49 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using YrClean.Core.Models;
 
 namespace YrClean.Core.Services;
 
-public class DeleteResult
-{
-    public int DeletedCount { get; set; }
-    public long FreedBytes { get; set; }
-
-    public int SkippedTooRecentCount { get; set; }
-    public int SkippedProtectedCount { get; set; }
-    public int SkippedOutsideRootCount { get; set; }
-    public int SkippedMissingCount { get; set; }
-    public int SkippedReparsePointCount { get; set; }
-    public int SkippedAccessDeniedCount { get; set; }
-    public int SkippedInUseCount { get; set; }
-    public int SkippedOtherErrorCount { get; set; }
-
-    public int SkippedCount =>
-        SkippedTooRecentCount + SkippedProtectedCount + SkippedOutsideRootCount +
-        SkippedMissingCount + SkippedReparsePointCount + SkippedAccessDeniedCount +
-        SkippedInUseCount + SkippedOtherErrorCount;
-
-    public List<string> Errors { get; set; } = new();
-}
-
 public static class SafeDeleteService
 {
-    public class ClassificationResult
-    {
-        public List<string> DeletableNow { get; set; } = new();
-        public long DeletableNowBytes { get; set; }
-        public List<string> NeedsAdmin { get; set; } = new();
-        public long NeedsAdminBytes { get; set; }
-
-        public int SkippedTooRecentCount { get; set; }
-        public int SkippedProtectedCount { get; set; }
-        public int SkippedOutsideRootCount { get; set; }
-        public int SkippedMissingCount { get; set; }
-        public int SkippedReparsePointCount { get; set; }
-        public int SkippedInUseCount { get; set; }
-    }
-
     // File types that must never be deleted, even if they somehow end up selected
     // inside a cache folder — protects against breaking the system or an app.
     private static readonly HashSet<string> ProtectedExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -51,64 +11,50 @@ public static class SafeDeleteService
         ".exe", ".dll", ".sys", ".msi", ".ocx", ".drv", ".lnk", ".ini", ".bat", ".cmd", ".ps1", ".vbs"
     };
 
+    private enum SafetyCheck
+    {
+        Passed,
+        OutsideRoot,
+        ProtectedExtension,
+        Missing,
+        ReparsePoint,
+        TooRecent
+    }
+
+    private enum DenyReason
+    {
+        AccessDenied,
+        InUse
+    }
+
     public static ClassificationResult Classify(
         IEnumerable<string> filePaths,
         IEnumerable<string> allowedRoots,
         int minAgeDays)
     {
         var result = new ClassificationResult();
-        var roots = allowedRoots
-            .Select(r => Path.GetFullPath(r).TrimEnd(Path.DirectorySeparatorChar))
-            .ToList();
-        var cutoff = DateTime.Now.AddDays(-minAgeDays);
+        var policy = new SafetyPolicy(allowedRoots, minAgeDays);
 
         foreach (var path in filePaths)
         {
             try
             {
-                var fullPath = Path.GetFullPath(path);
-                bool insideAllowedRoot = roots.Any(root =>
-                    fullPath.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
-
-                if (!insideAllowedRoot)
+                var info = new FileInfo(Path.GetFullPath(path));
+                var check = policy.Check(info);
+                if (check != SafetyCheck.Passed)
                 {
-                    result.SkippedOutsideRootCount++;
-                    continue;
-                }
-
-                if (ProtectedExtensions.Contains(Path.GetExtension(fullPath)))
-                {
-                    result.SkippedProtectedCount++;
-                    continue;
-                }
-
-                var info = new FileInfo(fullPath);
-                if (!info.Exists)
-                {
-                    result.SkippedMissingCount++;
-                    continue;
-                }
-
-                if (info.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                {
-                    result.SkippedReparsePointCount++;
-                    continue;
-                }
-
-                if (info.LastAccessTime > cutoff)
-                {
-                    result.SkippedTooRecentCount++;
+                    RecordSkip(result, check);
                     continue;
                 }
 
                 if (CanLikelyDelete(info, out var reason))
                 {
-                    result.DeletableNow.Add(fullPath);
+                    result.DeletableNow.Add(info.FullName);
                     result.DeletableNowBytes += info.Length;
                 }
                 else if (reason == DenyReason.AccessDenied)
                 {
-                    result.NeedsAdmin.Add(fullPath);
+                    result.NeedsAdmin.Add(info.FullName);
                     result.NeedsAdminBytes += info.Length;
                 }
                 else
@@ -128,81 +74,32 @@ public static class SafeDeleteService
     public static DeleteResult DeleteFiles(
         IEnumerable<string> filePaths,
         IEnumerable<string> allowedRoots,
-        int minAgeDays,
-        bool dryRun = false)
+        int minAgeDays)
     {
         var result = new DeleteResult();
-        var roots = allowedRoots
-            .Select(r => Path.GetFullPath(r).TrimEnd(Path.DirectorySeparatorChar))
-            .ToList();
-        var cutoff = DateTime.Now.AddDays(-minAgeDays);
+        var policy = new SafetyPolicy(allowedRoots, minAgeDays);
 
         foreach (var path in filePaths)
         {
             try
             {
-                var fullPath = Path.GetFullPath(path);
-
-                // Safety check 1: the file must live inside one of the known/allowed roots.
-                // This makes it physically impossible to delete anything outside cache folders,
-                // even if a bug elsewhere passes in a bad path.
-                bool insideAllowedRoot = roots.Any(root =>
-                    fullPath.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
-
-                if (!insideAllowedRoot)
+                var info = new FileInfo(Path.GetFullPath(path));
+                var check = policy.Check(info);
+                if (check != SafetyCheck.Passed)
                 {
-                    result.Errors.Add($"Blocked (outside allowed roots): {fullPath}");
-                    result.SkippedOutsideRootCount++;
-                    continue;
-                }
-
-                // Safety check 2: never touch protected file types
-                if (ProtectedExtensions.Contains(Path.GetExtension(fullPath)))
-                {
-                    result.Errors.Add($"Blocked (protected extension): {fullPath}");
-                    result.SkippedProtectedCount++;
-                    continue;
-                }
-
-                var info = new FileInfo(fullPath);
-                if (!info.Exists)
-                {
-                    result.SkippedMissingCount++;
-                    continue;
-                }
-
-                if (info.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                {
-                    result.Errors.Add($"Blocked (reparse point): {fullPath}");
-                    result.SkippedReparsePointCount++;
-                    continue;
-                }
-
-                // Safety check 3: skip anything accessed more recently than the age threshold
-                if (info.LastAccessTime > cutoff)
-                {
-                    result.SkippedTooRecentCount++;
-                    continue;
-                }
-
-                if (dryRun)
-                {
-                    if (!CanLikelyDelete(info, out var reason))
-                    {
-                        if (reason == DenyReason.AccessDenied)
-                            result.SkippedAccessDeniedCount++;
-                        else
-                            result.SkippedInUseCount++;
-
-                        continue;
-                    }
-
-                    result.DeletedCount++;
-                    result.FreedBytes += info.Length;
+                    RecordSkip(result, check);
+                    if (BlockedMessage(check) is { } message)
+                        result.Errors.Add($"{message}: {info.FullName}");
                     continue;
                 }
 
                 long size = info.Length;
+
+                // Like `del /f`: the read-only flag makes Delete throw "access denied" even for an
+                // administrator. The file has already passed every safety check above.
+                if (info.IsReadOnly)
+                    info.IsReadOnly = false;
+
                 info.Delete();
                 result.DeletedCount++;
                 result.FreedBytes += size;
@@ -227,19 +124,80 @@ public static class SafeDeleteService
         return result;
     }
 
-    private enum DenyReason
+    // The checks every file must pass before it may be touched, in order.
+    private sealed class SafetyPolicy
     {
-        AccessDenied,
-        InUse
+        private readonly List<string> _roots;
+        private readonly DateTime _cutoff;
+
+        public SafetyPolicy(IEnumerable<string> allowedRoots, int minAgeDays)
+        {
+            _roots = allowedRoots
+                .Select(r => Path.GetFullPath(r).TrimEnd(Path.DirectorySeparatorChar))
+                .ToList();
+            _cutoff = DateTime.Now.AddDays(-minAgeDays);
+        }
+
+        public SafetyCheck Check(FileInfo info)
+        {
+            // 1: the file must live inside one of the known/allowed roots.
+            // This makes it physically impossible to delete anything outside cache folders,
+            // even if a bug elsewhere passes in a bad path.
+            var fullPath = info.FullName;
+            bool insideAllowedRoot = _roots.Any(root =>
+                fullPath.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+            if (!insideAllowedRoot)
+                return SafetyCheck.OutsideRoot;
+
+            // 2: never touch protected file types
+            if (ProtectedExtensions.Contains(info.Extension))
+                return SafetyCheck.ProtectedExtension;
+
+            if (!info.Exists)
+                return SafetyCheck.Missing;
+
+            if (info.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                return SafetyCheck.ReparsePoint;
+
+            // 3: skip anything accessed more recently than the age threshold
+            if (info.LastAccessTime > _cutoff)
+                return SafetyCheck.TooRecent;
+
+            return SafetyCheck.Passed;
+        }
     }
+
+    private static void RecordSkip(SkipStatistics stats, SafetyCheck check)
+    {
+        switch (check)
+        {
+            case SafetyCheck.OutsideRoot: stats.SkippedOutsideRootCount++; break;
+            case SafetyCheck.ProtectedExtension: stats.SkippedProtectedCount++; break;
+            case SafetyCheck.Missing: stats.SkippedMissingCount++; break;
+            case SafetyCheck.ReparsePoint: stats.SkippedReparsePointCount++; break;
+            case SafetyCheck.TooRecent: stats.SkippedTooRecentCount++; break;
+        }
+    }
+
+    // Only blocks that point at a suspicious selection are worth reporting as errors
+    private static string? BlockedMessage(SafetyCheck check) => check switch
+    {
+        SafetyCheck.OutsideRoot => "Blocked (outside allowed roots)",
+        SafetyCheck.ProtectedExtension => "Blocked (protected extension)",
+        SafetyCheck.ReparsePoint => "Blocked (reparse point)",
+        _ => null
+    };
 
     private static bool CanLikelyDelete(FileInfo info, out DenyReason reason)
     {
-        reason = DenyReason.AccessDenied;
+        // A read-only file always refuses write access, but DeleteFiles clears that flag,
+        // so probe it for locks only instead of misreporting it as needing administrator rights.
+        var probeAccess = info.IsReadOnly ? FileAccess.Read : FileAccess.Write;
 
         try
         {
-            using var stream = info.Open(FileMode.Open, FileAccess.Write, FileShare.None);
+            using var stream = info.Open(FileMode.Open, probeAccess, FileShare.None);
+            reason = default;
             return true;
         }
         catch (UnauthorizedAccessException)

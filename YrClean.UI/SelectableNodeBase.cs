@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace YrClean.UI;
@@ -8,6 +7,15 @@ namespace YrClean.UI;
 public abstract class SelectableNodeBase : INotifyPropertyChanged
 {
     private bool _isSelected;
+
+    protected SelectableNodeBase(string name, string sizeDisplay)
+    {
+        Name = name;
+        SizeDisplay = sizeDisplay;
+    }
+
+    public string Name { get; }
+    public string SizeDisplay { get; }
 
     public bool IsSelected
     {

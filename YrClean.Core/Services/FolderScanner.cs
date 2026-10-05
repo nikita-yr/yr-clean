@@ -38,8 +38,7 @@ public class FolderScanner
                         {
                             FullPath = info.FullName,
                             SizeBytes = info.Length,
-                            LastAccessTime = info.LastAccessTime,
-                            IsDirectory = false
+                            LastAccessTime = info.LastAccessTime
                         });
                     }
                     catch (Exception)

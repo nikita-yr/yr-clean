@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace YrClean.Core.Models;
 
 public class PendingCleanRequest

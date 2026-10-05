@@ -1,4 +1,4 @@
-namespace YrClean.Core.Models;
+namespace YrClean.Core.Services;
 
 public static class SizeFormatter
 {

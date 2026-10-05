@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.Json;
 using YrClean.Core.Models;
 
@@ -34,11 +32,7 @@ public static class PendingCleanRequestService
         {
             File.Delete(path);
         }
-        catch (IOException)
-        {
-            // The elevated helper has already consumed the request.
-        }
-        catch (UnauthorizedAccessException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             // The elevated helper has already consumed the request.
         }

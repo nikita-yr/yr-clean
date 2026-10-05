@@ -5,10 +5,9 @@ namespace YrClean.Core.Services;
 
 public static class SettingsService
 {
-    private static readonly string SettingsDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "YrClean");
+    private static readonly string SettingsPath = Path.Combine(AppPaths.DataDirectory, "settings.json");
 
-    private static readonly string SettingsPath = Path.Combine(SettingsDir, "settings.json");
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public static CleanSettings Load()
     {
@@ -39,8 +38,7 @@ public static class SettingsService
 
     public static void Save(CleanSettings settings)
     {
-        Directory.CreateDirectory(SettingsDir);
-        var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(SettingsPath, json);
+        Directory.CreateDirectory(AppPaths.DataDirectory);
+        File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, JsonOptions));
     }
 }

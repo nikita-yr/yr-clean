@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -8,14 +7,7 @@ public static class NotificationService
 {
     public static void ShowBalloonBlocking(string title, string message)
     {
-        using var icon = new NotifyIcon
-        {
-            Icon = System.Drawing.SystemIcons.Information,
-            Visible = true,
-            BalloonTipTitle = title,
-            BalloonTipText = message,
-            BalloonTipIcon = ToolTipIcon.Info
-        };
+        using var icon = CreateIcon(title, message);
 
         using var closeTimer = new System.Windows.Forms.Timer { Interval = 6000 };
         closeTimer.Tick += (_, _) =>
@@ -32,15 +24,7 @@ public static class NotificationService
 
     public static void ShowBalloon(string title, string message, int durationMs = 4000)
     {
-        var icon = new NotifyIcon
-        {
-            Icon = System.Drawing.SystemIcons.Information,
-            Visible = true,
-            BalloonTipTitle = title,
-            BalloonTipText = message,
-            BalloonTipIcon = ToolTipIcon.Info
-        };
-
+        var icon = CreateIcon(title, message);
         icon.ShowBalloonTip(durationMs);
 
         var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(durationMs + 1000) };
@@ -52,4 +36,13 @@ public static class NotificationService
         };
         timer.Start();
     }
+
+    private static NotifyIcon CreateIcon(string title, string message) => new()
+    {
+        Icon = System.Drawing.SystemIcons.Information,
+        Visible = true,
+        BalloonTipTitle = title,
+        BalloonTipText = message,
+        BalloonTipIcon = ToolTipIcon.Info
+    };
 }

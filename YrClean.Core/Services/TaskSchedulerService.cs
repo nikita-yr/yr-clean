@@ -12,7 +12,7 @@ public static class TaskSchedulerService
         if (!settings.ScheduleEnabled)
             return Unregister();
 
-        var taskAction = $"wscript.exe \"{vbsPath}\" \"{exePath}\" --auto-clean";
+        var taskAction = $"wscript.exe \"{vbsPath}\" \"{exePath}\" {CommandLineSwitches.AutoClean}";
 
         var args = new List<string>
         {

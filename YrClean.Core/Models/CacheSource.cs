@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using YrClean.Core.Services;
 
 namespace YrClean.Core.Models;
@@ -19,4 +17,10 @@ public class CacheSource
         var expanded = Environment.ExpandEnvironmentVariables(PathTemplate);
         return PathWildcardResolver.Resolve(expanded);
     }
+
+    // Same as ResolvePaths, minus anything the user has excluded
+    public List<string> ResolvePaths(IEnumerable<string> excludedPaths) =>
+        ResolvePaths()
+            .Where(path => !ExclusionFilter.IsExcluded(path, excludedPaths))
+            .ToList();
 }
