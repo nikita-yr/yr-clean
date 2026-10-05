@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using YrClean.Core.Models;
 using YrClean.Core.Services;
@@ -13,6 +15,9 @@ namespace YrClean.UI;
 
 public partial class MainWindow : Window
 {
+    [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
     private int _minAgeDays = 14;
     private List<string> _lastScanRoots = new();
     private List<CacheSourceNode> _lastScanNodes = new();
@@ -20,7 +25,15 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        SourceInitialized += (_, _) => UseDarkMode();
         Loaded += (_, _) => RunScan();
+    }
+
+    private void UseDarkMode()
+    {
+        var handle = new WindowInteropHelper(this).Handle;
+        int useDarkMode = 1;
+        DwmSetWindowAttribute(handle, 20, ref useDarkMode, sizeof(int));
     }
 
     private void RunScan()

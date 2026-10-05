@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using YrClean.Core.Models;
 using YrClean.Core.Services;
 
@@ -9,11 +11,15 @@ namespace YrClean.UI;
 
 public partial class SettingsWindow : Window
 {
+    [DllImport("dwmapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
     private readonly CleanSettings _settings;
 
     public SettingsWindow()
     {
         InitializeComponent();
+        SourceInitialized += (_, _) => UseDarkMode();
         _settings = SettingsService.Load();
 
         ScheduleEnabledCheck.IsChecked = _settings.ScheduleEnabled;
@@ -37,6 +43,13 @@ public partial class SettingsWindow : Window
 
         UpdateFieldVisibility();
         UpdateCustomDaysVisibility();
+    }
+
+    private void UseDarkMode()
+    {
+        var handle = new WindowInteropHelper(this).Handle;
+        int useDarkMode = 1;
+        DwmSetWindowAttribute(handle, 20, ref useDarkMode, sizeof(int));
     }
 
     private void FrequencyCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
