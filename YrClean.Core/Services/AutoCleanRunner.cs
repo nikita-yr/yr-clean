@@ -4,27 +4,24 @@ namespace YrClean.Core.Services;
 
 public static class AutoCleanRunner
 {
-    // Scans every enabled source and deletes everything old enough, per the saved settings.
-    // Used by the --auto-clean silent run, and later reusable by a "clean all" UI button.
+    // The unattended (--auto-clean) run: quarantines everything old enough in the enabled Safe
+    // sources. Review and Expert sources, including auto-discovered folders, are manual-only.
     public static DeleteResult Run(CleanSettings settings)
     {
+        QuarantineService.Default.Purge(settings.QuarantineDays);
+
         var scanner = new FolderScanner();
-        IEnumerable<CacheSource> sources = CacheSourceProvider.GetKnownSources();
-
-        if (settings.IncludeAutoDiscoveredInScheduledRun)
-            sources = sources.Concat(AutoDiscoveryScanner.Discover());
-
-        var roots = sources
-            .Where(s => !settings.DisabledSourceNames.Contains(s.Name))
+        var roots = CacheSourceProvider.GetKnownSources()
+            .Where(s => s.Level == RuleLevel.Safe && !settings.DisabledSourceNames.Contains(s.Name))
             .SelectMany(s => s.ResolvePaths(settings.ExcludedPaths))
             .ToList();
 
         var allFiles = roots
-            .SelectMany(root => scanner.Scan(root))
+            .SelectMany(root => scanner.Scan(root, settings.ExcludedPaths))
             .Select(f => f.FullPath)
             .ToList();
 
-        var result = SafeDeleteService.DeleteFiles(allFiles, roots, settings.MinAgeDays);
+        var result = SafeDeleteService.DeleteFiles(allFiles, roots, settings.MinAgeDays, settings.ExcludedPaths);
         CleanupLog.Write("scheduled", result);
         return result;
     }

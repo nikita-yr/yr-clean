@@ -9,14 +9,18 @@ public static class CleanupLog
 
     public static void Write(string runKind, DeleteResult result)
     {
+        OperationJournal.Append(new JournalEntry(
+            DateTime.Now, runKind, result.DeletedCount, result.FreedBytes,
+            result.SkippedCount, result.Errors.Count, result.QuarantineBatchId));
+
         try
         {
             Directory.CreateDirectory(AppPaths.DataDirectory);
 
             var lines = new List<string>
             {
-                $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}  run={runKind}  deleted={result.DeletedCount}  " +
-                $"freed={SizeFormatter.Format(result.FreedBytes)}  skipped={result.SkippedCount}  " +
+                $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}  run={runKind}  quarantined={result.DeletedCount}  " +
+                $"size={SizeFormatter.Format(result.FreedBytes)}  skipped={result.SkippedCount}  " +
                 $"errors={result.Errors.Count}"
             };
             lines.AddRange(result.Errors.Select(error => "    " + error));

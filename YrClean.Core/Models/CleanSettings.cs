@@ -24,5 +24,6 @@ public class CleanSettings
     // Default: fully silent. When true, shows a Windows balloon notification after each run.
     public bool NotifyOnComplete { get; set; } = false;
 
-    public bool IncludeAutoDiscoveredInScheduledRun { get; set; } = true;
+    // Quarantined files are permanently deleted after this many days.
+    public int QuarantineDays { get; set; } = 7;
 }

@@ -53,7 +53,7 @@ public static class AutoDiscoveryScanner
                 continue;
             }
 
-            if (CacheHeuristics.IsExcluded(dir)) continue;
+            if (CacheHeuristics.IsExcluded(dir) || ProtectedLocations.IsForbidden(dir)) continue;
 
             var name = Path.GetFileName(dir);
             if (CacheHeuristics.LooksLikeCacheFolder(name))
@@ -75,7 +75,8 @@ public static class AutoDiscoveryScanner
         {
             Name = label,
             PathTemplate = fullPath,
-            Category = "Auto-discovered"
+            Category = "Auto-discovered",
+            Level = RuleLevel.Review // a name heuristic is a guess, so a person must look first
         };
     }
 }

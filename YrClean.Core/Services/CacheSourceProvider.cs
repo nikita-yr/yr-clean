@@ -10,7 +10,7 @@ public static class CacheSourceProvider
         {
             new() { Name = "User Temp", PathTemplate = "%TEMP%", Category = "System" },
             new() { Name = "System Temp", PathTemplate = "%SystemRoot%\\Temp", Category = "System" },
-            new() { Name = "Prefetch", PathTemplate = "%SystemRoot%\\Prefetch", Category = "System" },
+            new() { Name = "Prefetch", PathTemplate = "%SystemRoot%\\Prefetch", Category = "System", Level = RuleLevel.Expert },
 
             new() { Name = "NVIDIA Shader Cache (GL)", PathTemplate = "%LocalAppData%\\NVIDIA\\GLCache", Category = "GPU" },
             new() { Name = "NVIDIA Shader Cache (DX)", PathTemplate = "%LocalAppData%\\NVIDIA\\DXCache", Category = "GPU" },

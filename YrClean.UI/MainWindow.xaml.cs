@@ -16,6 +16,8 @@ public partial class MainWindow : Window
     private static readonly SolidColorBrush ContextHighlightBrush = CreateFrozenBrush(0x33, 0x00, 0xA2, 0xFF);
 
     private int _minAgeDays = 14;
+    private int _quarantineDays = 7;
+    private List<string> _excludedPaths = new();
     private List<string> _lastScanRoots = new();
     private List<CacheSourceNode> _lastScanNodes = new();
 
@@ -30,6 +32,8 @@ public partial class MainWindow : Window
     {
         var settings = SettingsService.Load();
         _minAgeDays = settings.MinAgeDays;
+        _quarantineDays = settings.QuarantineDays;
+        _excludedPaths = settings.ExcludedPaths;
         CleanButton.Content = $"Clean > {_minAgeDays} days";
 
         var scanner = new FolderScanner();
@@ -44,7 +48,7 @@ public partial class MainWindow : Window
                 continue;
 
             roots.AddRange(resolvedPaths);
-            var allGroups = resolvedPaths.SelectMany(scanner.ScanGrouped).ToList();
+            var allGroups = resolvedPaths.SelectMany(path => scanner.ScanGrouped(path, settings.ExcludedPaths)).ToList();
 
             if (allGroups.Sum(group => group.TotalSizeBytes) == 0)
                 continue;
@@ -56,14 +60,17 @@ public partial class MainWindow : Window
         _lastScanRoots = roots;
         ResultsTree.ItemsSource = _lastScanNodes;
 
-        SetAllSelected(true);
-        SelectAllCheck.IsChecked = true;
+        // Only Safe sources are pre-selected; Review and Expert need a deliberate tick
+        SelectAllCheck.IsChecked = false;
+        foreach (var node in _lastScanNodes)
+            node.IsSelected = node.Level == RuleLevel.Safe;
     }
 
+    // Expert sources are never bulk-selected
     private void SetAllSelected(bool isSelected)
     {
         foreach (var node in _lastScanNodes)
-            node.IsSelected = isSelected;
+            node.IsSelected = isSelected && node.Level != RuleLevel.Expert;
     }
 
     private void SelectAllCheck_Checked(object sender, RoutedEventArgs e) => SetAllSelected(true);
@@ -79,11 +86,11 @@ public partial class MainWindow : Window
             return;
         }
 
-        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays);
+        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays, _excludedPaths);
         if (classification.TotalCount == 0)
         {
             ShowInfo(
-                $"None of the {selectedFiles.Count} selected files can be deleted right now.\n\n" +
+                $"None of the {selectedFiles.Count} selected files can be cleaned right now.\n\n" +
                 BuildClassificationSummary(classification, forConfirm: false),
                 "Nothing to clean");
             return;
@@ -96,7 +103,7 @@ public partial class MainWindow : Window
         {
             // Everything is deleted in this process, so the summary reports exact final numbers.
             var allFiles = classification.DeletableNow.Concat(classification.NeedsAdmin).ToList();
-            var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays);
+            var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays, _excludedPaths);
             CleanupLog.Write("manual", result);
 
             ShowInfo(BuildDeleteSummary(result, allFiles.Count), "Cleanup complete");
@@ -104,14 +111,14 @@ public partial class MainWindow : Window
             return;
         }
 
-        var partialResult = SafeDeleteService.DeleteFiles(classification.DeletableNow, _lastScanRoots, _minAgeDays);
+        var partialResult = SafeDeleteService.DeleteFiles(classification.DeletableNow, _lastScanRoots, _minAgeDays, _excludedPaths);
         CleanupLog.Write("manual", partialResult);
 
         var adminCount = classification.NeedsAdmin.Count;
         var helperNote = StartElevatedCleanup(classification.NeedsAdmin)
             ? $"\n\n{adminCount} more files need administrator rights - finishing in the background. " +
-              "The Windows notification will report how many of them were deleted."
-            : $"\n\n{adminCount} files that need administrator rights were not deleted (UAC prompt cancelled).";
+              "The Windows notification will report how many of them were moved to quarantine."
+            : $"\n\n{adminCount} files that need administrator rights were left in place (UAC prompt cancelled).";
 
         ShowInfo(BuildDeleteSummary(partialResult, classification.DeletableNow.Count) + helperNote, "Cleanup complete");
 
@@ -127,14 +134,14 @@ public partial class MainWindow : Window
     {
         var lines = new List<string>
         {
-            $"Deleted: {result.DeletedCount} of {attemptedCount} files",
-            $"Freed: {SizeFormatter.Format(result.FreedBytes)}"
+            $"Moved to quarantine: {result.DeletedCount} of {attemptedCount} files",
+            $"Size: {SizeFormatter.Format(result.FreedBytes)} (space is freed when quarantine expires in {_quarantineDays} days)"
         };
 
         if (result.SkippedCount > 0)
         {
             lines.Add("");
-            lines.Add($"Not deleted: {result.SkippedCount}");
+            lines.Add($"Left in place: {result.SkippedCount}");
             AddSkipReasons(lines, result);
             AddIfAny(lines, result.SkippedAccessDeniedCount, "access denied");
             AddIfAny(lines, result.SkippedOtherErrorCount, "other errors");
@@ -155,7 +162,7 @@ public partial class MainWindow : Window
     private bool ConfirmCleanup(ClassificationResult classification)
     {
         var confirm = MessageBox.Show(
-            $"{classification.TotalCount} files will be deleted, freeing " +
+            $"{classification.TotalCount} files will be moved to quarantine, " +
             $"{SizeFormatter.Format(classification.TotalBytes)}.\n\n" +
             BuildClassificationSummary(classification, forConfirm: true) +
             "\nProceed?",
@@ -174,6 +181,7 @@ public partial class MainWindow : Window
         {
             FilePaths = filePaths,
             AllowedRoots = _lastScanRoots,
+            ExcludedPaths = _excludedPaths,
             MinAgeDays = _minAgeDays
         };
         var manifestPath = PendingCleanRequestService.Save(request);
@@ -203,7 +211,7 @@ public partial class MainWindow : Window
 
         if (forConfirm && NeedsElevatedHelper(classification))
         {
-            lines.Add($"- {classification.DeletableNow.Count} deletable now ({SizeFormatter.Format(classification.DeletableNowBytes)})");
+            lines.Add($"- {classification.DeletableNow.Count} can be moved now ({SizeFormatter.Format(classification.DeletableNowBytes)})");
             lines.Add($"- {classification.NeedsAdmin.Count} need administrator rights ({SizeFormatter.Format(classification.NeedsAdminBytes)}) - one UAC prompt");
         }
 
@@ -213,8 +221,9 @@ public partial class MainWindow : Window
 
     private void AddSkipReasons(List<string> lines, SkipStatistics stats)
     {
-        AddIfAny(lines, stats.SkippedTooRecentCount, $"too recent (accessed within {_minAgeDays} days)");
+        AddIfAny(lines, stats.SkippedTooRecentCount, $"too recent (used within {_minAgeDays} days)");
         AddIfAny(lines, stats.SkippedProtectedCount, "protected file type");
+        AddIfAny(lines, stats.SkippedExcludedCount, "excluded by you");
         AddIfAny(lines, stats.SkippedReparsePointCount, "reparse point / symlink");
         AddIfAny(lines, stats.SkippedOutsideRootCount, "outside allowed folders");
         AddIfAny(lines, stats.SkippedMissingCount, "already gone");
@@ -224,6 +233,26 @@ public partial class MainWindow : Window
     private static void AddIfAny(List<string> lines, int count, string description)
     {
         if (count > 0) lines.Add($"- {count} {description}");
+    }
+
+    private string ExpertWarning()
+    {
+        var expertNames = _lastScanNodes
+            .Where(source => source.Level == RuleLevel.Expert &&
+                             source.Children.SelectMany(group => group.Children).Any(file => file.IsSelected))
+            .Select(source => source.Name)
+            .ToList();
+
+        return expertNames.Count == 0
+            ? ""
+            : "WARNING - expert-level sources are selected: " + string.Join(", ", expertNames) +
+              ".\nCleaning them can slow Windows down or change how it behaves.\n\n";
+    }
+
+    private void QuarantineButton_Click(object sender, RoutedEventArgs e)
+    {
+        new QuarantineWindow { Owner = this }.ShowDialog();
+        RunScan();
     }
 
     private void ScheduleButton_Click(object sender, RoutedEventArgs e)

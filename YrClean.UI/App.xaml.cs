@@ -23,6 +23,8 @@ public partial class App : System.Windows.Application
             return;
         }
 
+        // Quarantined files past their retention period are deleted for good here
+        QuarantineService.Default.Purge(SettingsService.Load().QuarantineDays);
         new MainWindow().Show();
     }
 
@@ -53,14 +55,15 @@ public partial class App : System.Windows.Application
             var result = SafeDeleteService.DeleteFiles(
                 request.FilePaths,
                 request.AllowedRoots,
-                request.MinAgeDays);
+                request.MinAgeDays,
+                request.ExcludedPaths);
             CleanupLog.Write("elevated", result);
 
             // Report against the number the main window announced, so the two always reconcile
-            var message = $"Deleted {result.DeletedCount} of {request.FilePaths.Count} administrator-protected files, " +
-                          $"freed {SizeFormatter.Format(result.FreedBytes)}.";
+            var message = $"Moved {result.DeletedCount} of {request.FilePaths.Count} administrator-protected files to quarantine, " +
+                          $"{SizeFormatter.Format(result.FreedBytes)}.";
             if (result.SkippedCount > 0)
-                message += $" {result.SkippedCount} could not be deleted (details in autoclean.log).";
+                message += $" {result.SkippedCount} were left in place (details in autoclean.log).";
 
             TryNotify(message);
         }
@@ -76,7 +79,7 @@ public partial class App : System.Windows.Application
         var result = AutoCleanRunner.Run(settings);
 
         if (settings.NotifyOnComplete)
-            TryNotify($"Deleted {result.DeletedCount} files, freed {SizeFormatter.Format(result.FreedBytes)}.");
+            TryNotify($"Moved {result.DeletedCount} files to quarantine, {SizeFormatter.Format(result.FreedBytes)}.");
     }
 
     private static void TryNotify(string message)

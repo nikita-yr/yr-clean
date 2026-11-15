@@ -33,6 +33,13 @@
                         Margin="0,0,10,0"
                         Click="CleanButton_Click"/>
 
+                <Button Name="QuarantineButton"
+                        Content="Quarantine"
+                        Width="110" Height="40"
+                        Margin="0,0,10,0"
+                        ToolTip="Review and restore cleaned files"
+                        Click="QuarantineButton_Click"/>
+
                 <Button Name="ScheduleButton"
                         Width="36" Height="36"
                     Padding="0"

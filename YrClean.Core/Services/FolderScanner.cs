@@ -4,9 +4,11 @@ namespace YrClean.Core.Services;
 
 public class FolderScanner
 {
-    public List<CacheEntry> Scan(string rootPath)
+    // Folders listed in excludedPaths are not entered at all.
+    public List<CacheEntry> Scan(string rootPath, IEnumerable<string>? excludedPaths = null)
     {
         var results = new List<CacheEntry>();
+        var excluded = (excludedPaths ?? Enumerable.Empty<string>()).ToList();
 
         if (!Directory.Exists(rootPath))
             return results;
@@ -52,7 +54,8 @@ public class FolderScanner
                     try
                     {
                         var info = new DirectoryInfo(subdirectory);
-                        if (!info.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                        if (!info.Attributes.HasFlag(FileAttributes.ReparsePoint) &&
+                            !ExclusionFilter.IsExcluded(info.FullName, excluded))
                             pendingDirectories.Push(info.FullName);
                     }
                     catch (Exception)
@@ -75,9 +78,9 @@ public class FolderScanner
     }
 
     // Groups files by their top-level subfolder under rootPath, sorted by size descending
-    public List<CacheGroup> ScanGrouped(string rootPath)
+    public List<CacheGroup> ScanGrouped(string rootPath, IEnumerable<string>? excludedPaths = null)
     {
-        var entries = Scan(rootPath);
+        var entries = Scan(rootPath, excludedPaths);
         var groups = new Dictionary<string, CacheGroup>();
 
         foreach (var entry in entries)

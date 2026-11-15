@@ -9,4 +9,5 @@ public abstract class SkipStatistics
     public int SkippedMissingCount { get; set; }
     public int SkippedReparsePointCount { get; set; }
     public int SkippedInUseCount { get; set; }
+    public int SkippedExcludedCount { get; set; }
 }

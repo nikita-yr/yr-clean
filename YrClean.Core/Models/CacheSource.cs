@@ -11,6 +11,8 @@ public class CacheSource
 
     public string Category { get; set; } = string.Empty;
 
+    public RuleLevel Level { get; set; } = RuleLevel.Safe;
+
     // Expands env vars, then resolves any wildcard segment into all matching real paths
     public List<string> ResolvePaths()
     {

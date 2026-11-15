@@ -31,7 +31,7 @@ public partial class SettingsWindow : Window
         FrequencyCombo.SelectedIndex = (int)_settings.Frequency; // FrequencyCombo items follow ScheduleFrequency order
         DayCombo.SelectedIndex = Array.IndexOf(DayComboOrder, _settings.WeeklyDay);
         NotifyCheck.IsChecked = _settings.NotifyOnComplete;
-        IncludeAutoDiscoveredCheck.IsChecked = _settings.IncludeAutoDiscoveredInScheduledRun;
+        QuarantineDaysTextBox.Text = _settings.QuarantineDays.ToString();
         SelectAgeThreshold(_settings.MinAgeDays);
 
         UpdateFieldVisibility();
@@ -100,12 +100,18 @@ public partial class SettingsWindow : Window
             return;
         }
 
+        if (!int.TryParse(QuarantineDaysTextBox.Text, out var quarantineDays) || quarantineDays < 1)
+        {
+            ShowMessage("Quarantine days must be a positive whole number.", MessageBoxImage.Error);
+            return;
+        }
+
         _settings.MinAgeDays = minAgeDays;
         _settings.ScheduleEnabled = ScheduleEnabledCheck.IsChecked == true;
         _settings.Frequency = (ScheduleFrequency)FrequencyCombo.SelectedIndex;
         _settings.WeeklyDay = DayComboOrder[DayCombo.SelectedIndex];
         _settings.NotifyOnComplete = NotifyCheck.IsChecked == true;
-        _settings.IncludeAutoDiscoveredInScheduledRun = IncludeAutoDiscoveredCheck.IsChecked == true;
+        _settings.QuarantineDays = quarantineDays;
 
         SettingsService.Save(_settings);
 

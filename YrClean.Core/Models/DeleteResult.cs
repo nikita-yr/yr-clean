@@ -11,7 +11,10 @@ public class DeleteResult : SkipStatistics
     public int SkippedCount =>
         SkippedTooRecentCount + SkippedProtectedCount + SkippedOutsideRootCount +
         SkippedMissingCount + SkippedReparsePointCount + SkippedAccessDeniedCount +
-        SkippedInUseCount + SkippedOtherErrorCount;
+        SkippedInUseCount + SkippedExcludedCount + SkippedOtherErrorCount;
+
+    // Files are moved to quarantine rather than deleted; null when nothing was moved.
+    public string? QuarantineBatchId { get; set; }
 
     public List<string> Errors { get; set; } = new();
 }
