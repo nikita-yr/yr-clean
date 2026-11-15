@@ -237,6 +237,12 @@ public partial class MainWindow : Window
               ".\nCleaning them can slow Windows down or change how it behaves.\n\n";
     }
 
+    private void ToolsButton_Click(object sender, RoutedEventArgs e)
+    {
+        new ToolsWindow { Owner = this }.ShowDialog();
+        RunScan();
+    }
+
     private void QuarantineButton_Click(object sender, RoutedEventArgs e)
     {
         new QuarantineWindow { Owner = this }.ShowDialog();
