@@ -253,6 +253,9 @@ public partial class MainWindow : Window
     private void DiskButton_Click(object sender, RoutedEventArgs e) =>
         new DiskWindow { Owner = this }.ShowDialog();
 
+    private void LeftoversButton_Click(object sender, RoutedEventArgs e) =>
+        new LeftoversWindow { Owner = this }.ShowDialog();
+
     private void QuarantineButton_Click(object sender, RoutedEventArgs e)
     {
         new QuarantineWindow { Owner = this }.ShowDialog();

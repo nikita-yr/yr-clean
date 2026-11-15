@@ -205,7 +205,11 @@ public static class StartupManager
     }
 
     // Returns the task's command if it has a logon or boot trigger, otherwise null.
-    public static (string Command, bool Enabled)? ParseTask(string xml)
+    public static (string Command, bool Enabled)? ParseTask(string xml) =>
+        ParseTaskAction(xml) is { RunsAtStartup: true } task ? (task.Command, task.Enabled) : null;
+
+    // The program a task runs, whatever its trigger; null when it has no Exec action.
+    public static (string Command, bool Enabled, bool RunsAtStartup)? ParseTaskAction(string xml)
     {
         var task = XDocument.Parse(xml).Root;
         if (task is null)
@@ -213,8 +217,7 @@ public static class StartupManager
 
         XNamespace ns = task.Name.Namespace;
         var triggers = task.Element(ns + "Triggers");
-        if (triggers?.Element(ns + "LogonTrigger") is null && triggers?.Element(ns + "BootTrigger") is null)
-            return null;
+        var runsAtStartup = triggers?.Element(ns + "LogonTrigger") is not null || triggers?.Element(ns + "BootTrigger") is not null;
 
         var exec = task.Element(ns + "Actions")?.Element(ns + "Exec");
         if (exec is null)
@@ -226,7 +229,7 @@ public static class StartupManager
                       (arguments.Length > 0 ? " " + arguments : "");
 
         var enabled = !string.Equals(task.Element(ns + "Settings")?.Element(ns + "Enabled")?.Value, "false", StringComparison.OrdinalIgnoreCase);
-        return (command, enabled);
+        return (command, enabled, runsAtStartup);
     }
 
     private static StartupItem Describe(
@@ -264,7 +267,7 @@ public static class StartupManager
         };
     }
 
-    private static string? ShortcutTarget(string shortcutPath)
+    internal static string? ShortcutTarget(string shortcutPath)
     {
         try
         {
