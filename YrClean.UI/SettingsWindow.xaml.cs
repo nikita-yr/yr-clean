@@ -33,6 +33,7 @@ public partial class SettingsWindow : Window
         NotifyCheck.IsChecked = _settings.NotifyOnComplete;
         QuarantineDaysTextBox.Text = _settings.QuarantineDays.ToString();
         UseWinapp2Check.IsChecked = _settings.UseWinapp2;
+        LowSpaceTextBox.Text = _settings.LowSpaceThresholdPercent.ToString();
         SelectAgeThreshold(_settings.MinAgeDays);
 
         UpdateFieldVisibility();
@@ -107,7 +108,14 @@ public partial class SettingsWindow : Window
             return;
         }
 
+        if (!int.TryParse(LowSpaceTextBox.Text, out var lowSpacePercent) || lowSpacePercent < 0 || lowSpacePercent > 99)
+        {
+            ShowMessage("The free space threshold must be a whole number from 0 to 99.", MessageBoxImage.Error);
+            return;
+        }
+
         _settings.MinAgeDays = minAgeDays;
+        _settings.LowSpaceThresholdPercent = lowSpacePercent;
         _settings.ScheduleEnabled = ScheduleEnabledCheck.IsChecked == true;
         _settings.Frequency = (ScheduleFrequency)FrequencyCombo.SelectedIndex;
         _settings.WeeklyDay = DayComboOrder[DayCombo.SelectedIndex];

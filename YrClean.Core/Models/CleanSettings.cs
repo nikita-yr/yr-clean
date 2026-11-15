@@ -29,4 +29,7 @@ public class CleanSettings
 
     // Load winapp2.ini from the user rules folder if present. Imported rules are always Review level.
     public bool UseWinapp2 { get; set; } = false;
+
+    // Warn (in the UI and after scheduled runs) when a fixed drive has less free space than this.
+    public int LowSpaceThresholdPercent { get; set; } = 15;
 }

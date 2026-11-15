@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:YrClean.UI"
         Title="YrClean"
-        Height="600" Width="800"
+        Height="640" Width="960"
         Icon="app.ico"
         Background="{DynamicResource BackgroundMain}"
         Foreground="{DynamicResource TextPrimary}">
     <Grid Background="{DynamicResource BackgroundMain}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -54,6 +55,13 @@
                         ToolTip="Programs that start with Windows"
                         Click="StartupButton_Click"/>
 
+                <Button Name="DiskButton"
+                        Content="Disk"
+                        Width="70" Height="40"
+                        Margin="0,0,10,0"
+                        ToolTip="Largest folders and files, old files, duplicates"
+                        Click="DiskButton_Click"/>
+
                 <Button Name="ScheduleButton"
                         Width="36" Height="36"
                     Padding="0"
@@ -69,8 +77,11 @@
             </StackPanel>
         </Border>
 
+        <TextBlock Name="LowSpaceText" Grid.Row="1" Visibility="Collapsed" TextWrapping="Wrap"
+                   Foreground="#E0A030" FontWeight="Bold" Margin="12,8,12,0"/>
+
         <TreeView Name="ResultsTree"
-                  Grid.Row="1"
+                  Grid.Row="2"
                   Margin="10"
                   Background="{DynamicResource BackgroundMain}"
                   Foreground="{DynamicResource TextPrimary}"

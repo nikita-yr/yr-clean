@@ -79,6 +79,11 @@ public partial class App : System.Windows.Application
         var settings = SettingsService.Load();
         var result = AutoCleanRunner.Run(settings);
 
+        // Low disk space is worth interrupting for even when routine notifications are off
+        var lowDrives = DiskAnalyzer.LowSpaceDrives(settings.LowSpaceThresholdPercent);
+        if (lowDrives.Count > 0)
+            TryNotify("Low disk space: " + DiskAnalyzer.LowSpaceMessage(lowDrives));
+
         if (settings.NotifyOnComplete)
             TryNotify($"Moved {result.DeletedCount} files to quarantine, {SizeFormatter.Format(result.FreedBytes)}.");
     }

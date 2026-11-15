@@ -37,6 +37,10 @@ public partial class MainWindow : Window
         _excludedPaths = settings.ExcludedPaths;
         CleanButton.Content = $"Clean > {_minAgeDays} days";
 
+        var lowDrives = DiskAnalyzer.LowSpaceDrives(settings.LowSpaceThresholdPercent);
+        LowSpaceText.Text = $"Low disk space: {DiskAnalyzer.LowSpaceMessage(lowDrives)}. Warning threshold: {settings.LowSpaceThresholdPercent}%.";
+        LowSpaceText.Visibility = lowDrives.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
         var sources = RuleEngine.LoadRelevant(settings).Concat(AutoDiscoveryScanner.Discover());
         var scans = SourceScanner.Scan(sources, settings.ExcludedPaths);
         var nodes = scans.Select(scan => new CacheSourceNode(scan)).ToList();
@@ -245,6 +249,9 @@ public partial class MainWindow : Window
 
     private void StartupButton_Click(object sender, RoutedEventArgs e) =>
         new StartupWindow { Owner = this }.ShowDialog();
+
+    private void DiskButton_Click(object sender, RoutedEventArgs e) =>
+        new DiskWindow { Owner = this }.ShowDialog();
 
     private void QuarantineButton_Click(object sender, RoutedEventArgs e)
     {

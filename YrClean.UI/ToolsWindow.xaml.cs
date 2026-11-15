@@ -25,8 +25,10 @@ public partial class ToolsWindow : Window
         RecycleBinButton.Content = $"Empty Recycle Bin ({SizeFormatter.Format(binBytes)})";
         RecycleBinButton.IsEnabled = binItems > 0 && _running is null;
 
+        var threshold = SettingsService.Load().LowSpaceThresholdPercent;
         var lines = SystemHealth.GetDriveSpace().Select(d =>
-            $"{d.Name}  {SizeFormatter.Format(d.FreeBytes)} free of {SizeFormatter.Format(d.TotalBytes)} ({d.FreePercent:F0}%)").ToList();
+            $"{d.Name}  {SizeFormatter.Format(d.FreeBytes)} free of {SizeFormatter.Format(d.TotalBytes)} ({d.FreePercent:F0}%)" +
+            (d.FreePercent < threshold ? "  -  LOW DISK SPACE" : "")).ToList();
         SummaryText.Text = string.Join("\n", lines) + "\nDisk health: checking...";
 
         // SMART is read through PowerShell, which takes a second or two
