@@ -190,4 +190,9 @@
   <data name="Tools_Health" xml:space="preserve"><value>Стан дисків: {0}</value></data>
   <data name="Tools_HealthWarning" xml:space="preserve"><value>УВАГА: диск повідомляє про проблеми. Зробіть резервну копію даних просто зараз.</value></data>
   <data name="Tools_StartupCount" xml:space="preserve"><value>Увімкнених програм в автозапуску: {0}</value></data>
+  <data name="Settings_UpdateRules" xml:space="preserve"><value>Оновити правила з GitHub</value></data>
+  <data name="Settings_DownloadWinapp2" xml:space="preserve"><value>Завантажити winapp2.ini</value></data>
+  <data name="Update_Done" xml:space="preserve"><value>Правил оновлено: {0}.</value></data>
+  <data name="Update_Winapp2Done" xml:space="preserve"><value>Файл winapp2.ini завантажено, придатних правил: {0}. Вони мають рівень «на перевірку» і ніколи не запускаються за розкладом.</value></data>
+  <data name="Update_Failed" xml:space="preserve"><value>Не вдалося завантажити правила: {0}</value></data>
 </root>

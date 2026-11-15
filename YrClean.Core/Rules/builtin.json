@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "version": 1,
   "rules": [
     { "id": "user-temp", "name": "User Temp", "category": "System", "level": "safe", "paths": ["%TEMP%"] },
     { "id": "system-temp", "name": "System Temp", "category": "System", "level": "safe", "paths": ["%SystemRoot%\\Temp"] },

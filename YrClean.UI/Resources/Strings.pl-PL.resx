@@ -190,4 +190,9 @@
   <data name="Tools_Health" xml:space="preserve"><value>Kondycja dysków: {0}</value></data>
   <data name="Tools_HealthWarning" xml:space="preserve"><value>UWAGA: dysk zgłasza problemy. Wykonaj kopię zapasową danych już teraz.</value></data>
   <data name="Tools_StartupCount" xml:space="preserve"><value>Włączone programy w autostarcie: {0}</value></data>
+  <data name="Settings_UpdateRules" xml:space="preserve"><value>Zaktualizuj reguły z GitHub</value></data>
+  <data name="Settings_DownloadWinapp2" xml:space="preserve"><value>Pobierz winapp2.ini</value></data>
+  <data name="Update_Done" xml:space="preserve"><value>Zaktualizowane reguły: {0}.</value></data>
+  <data name="Update_Winapp2Done" xml:space="preserve"><value>Pobrano winapp2.ini, użyteczne reguły: {0}. Mają poziom „do sprawdzenia” i nigdy nie są uruchamiane według harmonogramu.</value></data>
+  <data name="Update_Failed" xml:space="preserve"><value>Nie udało się pobrać reguł: {0}</value></data>
 </root>

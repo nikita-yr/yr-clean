@@ -190,4 +190,9 @@
   <data name="Tools_Health" xml:space="preserve"><value>Disk health: {0}</value></data>
   <data name="Tools_HealthWarning" xml:space="preserve"><value>WARNING: a disk reports problems. Back up your data now.</value></data>
   <data name="Tools_StartupCount" xml:space="preserve"><value>Startup programs enabled: {0}</value></data>
+  <data name="Settings_UpdateRules" xml:space="preserve"><value>Update rules from GitHub</value></data>
+  <data name="Settings_DownloadWinapp2" xml:space="preserve"><value>Download winapp2.ini</value></data>
+  <data name="Update_Done" xml:space="preserve"><value>Rules updated: {0}.</value></data>
+  <data name="Update_Winapp2Done" xml:space="preserve"><value>winapp2.ini downloaded, usable rules: {0}. They are review level and never run on a schedule.</value></data>
+  <data name="Update_Failed" xml:space="preserve"><value>Could not download the rules: {0}</value></data>
 </root>

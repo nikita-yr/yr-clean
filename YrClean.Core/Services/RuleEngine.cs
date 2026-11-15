@@ -48,10 +48,19 @@ public static class RuleEngine
         var errors = new List<string>();
         var rules = new List<CacheSource>();
 
-        // A downloaded rule base is a newer copy of the built-in one; fall back if it is unusable
-        var remotePath = Path.Combine(UserRulesDirectory, RemoteRulesFileName);
-        var remote = File.Exists(remotePath) ? TryReadFile(remotePath, errors) : new List<CacheSource>();
-        rules.AddRange(remote.Count > 0 ? remote : LoadBuiltIn());
+        string? downloaded = null;
+        try
+        {
+            var remotePath = Path.Combine(UserRulesDirectory, RemoteRulesFileName);
+            if (File.Exists(remotePath))
+                downloaded = File.ReadAllText(remotePath);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            errors.Add(ex.Message);
+        }
+
+        rules.AddRange(Parse(ChooseRuleBase(BuiltInJson(), downloaded), out _));
 
         if (Directory.Exists(UserRulesDirectory))
         {
@@ -84,11 +93,44 @@ public static class RuleEngine
             .ToList();
     }
 
-    public static List<CacheSource> LoadBuiltIn()
+    public static List<CacheSource> LoadBuiltIn() => Parse(BuiltInJson(), out _);
+
+    private static string BuiltInJson()
     {
         using var stream = typeof(RuleEngine).Assembly.GetManifestResourceStream("YrClean.Core.Rules.builtin.json")!;
         using var reader = new StreamReader(stream);
-        return Parse(reader.ReadToEnd(), out _);
+        return reader.ReadToEnd();
+    }
+
+    // A downloaded rule base replaces the built-in one only if it is usable and at least as new;
+    // otherwise an old download would shadow the rules shipped with a newer app version.
+    public static string ChooseRuleBase(string builtInJson, string? downloadedJson) =>
+        downloadedJson is not null &&
+        ReadVersion(downloadedJson) >= ReadVersion(builtInJson) &&
+        Parse(downloadedJson, out _).Count > 0
+            ? downloadedJson
+            : builtInJson;
+
+    // The optional top-level "version" number of a rule file; 0 when absent or unreadable.
+    public static int ReadVersion(string json)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(json, new JsonDocumentOptions
+            {
+                AllowTrailingCommas = true,
+                CommentHandling = JsonCommentHandling.Skip
+            });
+            return document.RootElement.ValueKind == JsonValueKind.Object &&
+                   document.RootElement.TryGetProperty("version", out var version) &&
+                   version.TryGetInt32(out var number)
+                ? number
+                : 0;
+        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException)
+        {
+            return 0;
+        }
     }
 
     // Parses a rule file. Invalid rules are dropped and reported in errors; a file with the

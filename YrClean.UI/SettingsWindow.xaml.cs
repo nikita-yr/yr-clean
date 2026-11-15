@@ -154,6 +154,33 @@ public partial class SettingsWindow : Window
         Close();
     }
 
+    // The only two places YrClean touches the network, and only when the button is pressed
+    private async void UpdateRules_Click(object sender, RoutedEventArgs e) =>
+        await Download(() => RuleUpdater.UpdateRulesAsync(), "Update_Done");
+
+    private async void DownloadWinapp2_Click(object sender, RoutedEventArgs e)
+    {
+        if (await Download(() => RuleUpdater.DownloadWinapp2Async(), "Update_Winapp2Done"))
+            UseWinapp2Check.IsChecked = true; // takes effect when the settings are saved
+    }
+
+    private async Task<bool> Download(Func<Task<RuleUpdateResult>> download, string successKey)
+    {
+        UpdatePanel.IsEnabled = false;
+        try
+        {
+            var result = await download();
+            ShowMessage(
+                result.Ok ? L.T(successKey, result.RuleCount) : L.T("Update_Failed", result.Error),
+                result.Ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            return result.Ok;
+        }
+        finally
+        {
+            UpdatePanel.IsEnabled = true;
+        }
+    }
+
     private void ShowMessage(string message, MessageBoxImage image) =>
         MessageBox.Show(this, message, DialogTitle, MessageBoxButton.OK, image);
 }

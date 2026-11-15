@@ -53,7 +53,7 @@ public class LocalizationTests
         var defined = Load(null).Keys.ToHashSet();
         var used = Directory.EnumerateFiles(UiFolder, "*.*")
             .Where(f => f.EndsWith(".cs") || f.EndsWith(".xaml"))
-            .SelectMany(f => Regex.Matches(File.ReadAllText(f), @"(?:\bT\(|\{local:Loc\s+|=>\s*)""?([A-Z][A-Za-z0-9]*_[A-Za-z0-9]+)")
+            .SelectMany(f => Regex.Matches(File.ReadAllText(f), @"(?:\bT\(|\{local:Loc\s+|=>\s*|\),\s*)""?([A-Z][A-Za-z0-9]*_[A-Za-z0-9]+)")
                 .Select(m => m.Groups[1].Value))
             .ToHashSet();
 
