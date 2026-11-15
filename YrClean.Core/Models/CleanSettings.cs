@@ -32,4 +32,8 @@ public class CleanSettings
 
     // Warn (in the UI and after scheduled runs) when a fixed drive has less free space than this.
     public int LowSpaceThresholdPercent { get; set; } = 15;
+
+    // A separate monthly task that runs DISM component cleanup, at RunAtTime on this day (1-28).
+    public bool MaintenanceEnabled { get; set; } = false;
+    public int MaintenanceDayOfMonth { get; set; } = 1;
 }

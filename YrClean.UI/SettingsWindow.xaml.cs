@@ -34,6 +34,8 @@ public partial class SettingsWindow : Window
         QuarantineDaysTextBox.Text = _settings.QuarantineDays.ToString();
         UseWinapp2Check.IsChecked = _settings.UseWinapp2;
         LowSpaceTextBox.Text = _settings.LowSpaceThresholdPercent.ToString();
+        MaintenanceCheck.IsChecked = _settings.MaintenanceEnabled;
+        MaintenanceDayTextBox.Text = _settings.MaintenanceDayOfMonth.ToString();
         SelectAgeThreshold(_settings.MinAgeDays);
 
         UpdateFieldVisibility();
@@ -114,7 +116,15 @@ public partial class SettingsWindow : Window
             return;
         }
 
+        if (!int.TryParse(MaintenanceDayTextBox.Text, out var maintenanceDay) || maintenanceDay < 1 || maintenanceDay > 28)
+        {
+            ShowMessage("The day of month must be a whole number from 1 to 28.", MessageBoxImage.Error);
+            return;
+        }
+
         _settings.MinAgeDays = minAgeDays;
+        _settings.MaintenanceEnabled = MaintenanceCheck.IsChecked == true;
+        _settings.MaintenanceDayOfMonth = maintenanceDay;
         _settings.LowSpaceThresholdPercent = lowSpacePercent;
         _settings.ScheduleEnabled = ScheduleEnabledCheck.IsChecked == true;
         _settings.Frequency = (ScheduleFrequency)FrequencyCombo.SelectedIndex;
@@ -129,12 +139,12 @@ public partial class SettingsWindow : Window
         var vbsPath = Path.Combine(AppContext.BaseDirectory, "invisible.vbs");
         if (!TaskSchedulerService.Register(_settings, exePath, vbsPath))
         {
-            ShowMessage("Failed to update the scheduled task.", MessageBoxImage.Error);
+            ShowMessage("Failed to update the scheduled tasks.", MessageBoxImage.Error);
             return; // keep the window open so the user can retry
         }
 
         var summary = _settings.ScheduleEnabled
-            ? "Settings saved and the scheduled task was updated."
+            ? "Settings saved and the scheduled tasks were updated."
             : "Settings saved. Scheduled auto-clean is now disabled.";
 
         ShowMessage(summary, MessageBoxImage.Information);

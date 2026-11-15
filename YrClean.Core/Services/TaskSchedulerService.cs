@@ -1,85 +1,57 @@
-using System.Diagnostics;
 using YrClean.Core.Models;
 
 namespace YrClean.Core.Services;
 
+// Each module has its own Task Scheduler entry, so cache cleanup and monthly maintenance
+// run on independent schedules.
 public static class TaskSchedulerService
 {
-    private const string TaskName = "YrClean AutoClean";
+    private const string CleanTaskName = "YrClean AutoClean";
+    private const string MaintenanceTaskName = "YrClean Maintenance";
 
+    // Creates, updates or removes both tasks to match the settings.
     public static bool Register(CleanSettings settings, string exePath, string vbsPath)
     {
-        if (!settings.ScheduleEnabled)
-            return Unregister();
+        var cleanOk = settings.ScheduleEnabled
+            ? Create(CleanTaskName, exePath, vbsPath, CommandLineSwitches.AutoClean, CleanSchedule(settings))
+            : Remove(CleanTaskName);
 
-        var taskAction = $"wscript.exe \"{vbsPath}\" \"{exePath}\" {CommandLineSwitches.AutoClean}";
+        var maintenanceOk = settings.MaintenanceEnabled
+            ? Create(MaintenanceTaskName, exePath, vbsPath, CommandLineSwitches.ComponentCleanup, new[]
+              {
+                  "/SC", "MONTHLY", "/D", Math.Clamp(settings.MaintenanceDayOfMonth, 1, 28).ToString(), "/ST", settings.RunAtTime
+              })
+            : Remove(MaintenanceTaskName);
 
-        var args = new List<string>
-        {
-            "/Create", "/F",
-            "/TN", TaskName,
-            "/TR", taskAction,
-            "/SC", settings.Frequency switch
-            {
-                ScheduleFrequency.Hourly => "HOURLY",
-                ScheduleFrequency.Weekly => "WEEKLY",
-                _ => "DAILY"
-            },
-            "/RL", "HIGHEST"
-        };
-
-        if (settings.Frequency == ScheduleFrequency.Hourly)
-        {
-            args.Add("/MO");
-            args.Add("1");
-        }
-        else
-        {
-            args.Add("/ST");
-            args.Add(settings.RunAtTime);
-
-            if (settings.Frequency == ScheduleFrequency.Weekly)
-            {
-                args.Add("/D");
-                args.Add(DayCode(settings.WeeklyDay));
-            }
-        }
-
-        return RunSchtasks(args);
+        return cleanOk && maintenanceOk;
     }
 
-    public static bool Unregister() =>
-        RunSchtasks(new List<string> { "/Delete", "/TN", TaskName, "/F" });
+    public static bool Exists() => Exists(CleanTaskName);
 
-    public static bool Exists()
+    private static IEnumerable<string> CleanSchedule(CleanSettings settings) => settings.Frequency switch
     {
-        var exitCode = RunSchtasksGetExitCode(new List<string> { "/Query", "/TN", TaskName });
-        return exitCode == 0;
+        ScheduleFrequency.Hourly => new[] { "/SC", "HOURLY", "/MO", "1" },
+        ScheduleFrequency.Weekly => new[] { "/SC", "WEEKLY", "/ST", settings.RunAtTime, "/D", DayCode(settings.WeeklyDay) },
+        _ => new[] { "/SC", "DAILY", "/ST", settings.RunAtTime }
+    };
+
+    private static bool Create(string taskName, string exePath, string vbsPath, string appSwitch, IEnumerable<string> schedule)
+    {
+        var action = $"wscript.exe \"{vbsPath}\" \"{exePath}\" {appSwitch}";
+        return Schtasks(new[] { "/Create", "/F", "/TN", taskName, "/TR", action, "/RL", "HIGHEST" }.Concat(schedule)) == 0;
     }
 
-    private static bool RunSchtasks(List<string> args) => RunSchtasksGetExitCode(args) == 0;
+    // Removing a task that is not there counts as success
+    private static bool Remove(string taskName) =>
+        !Exists(taskName) || Schtasks(new[] { "/Delete", "/TN", taskName, "/F" }) == 0;
 
-    private static int RunSchtasksGetExitCode(List<string> args)
+    private static bool Exists(string taskName) => Schtasks(new[] { "/Query", "/TN", taskName }) == 0;
+
+    private static int Schtasks(IEnumerable<string> args)
     {
         try
         {
-            var psi = new ProcessStartInfo("schtasks.exe")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-
-            foreach (var arg in args)
-                psi.ArgumentList.Add(arg);
-
-            using var process = Process.Start(psi);
-            if (process is null)
-                return -1;
-
-            process.WaitForExit();
-            return process.ExitCode;
+            return ProcessRunner.Run(ProcessRunner.System32("schtasks.exe"), args);
         }
         catch (Exception)
         {

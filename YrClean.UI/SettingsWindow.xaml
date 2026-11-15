@@ -1,7 +1,7 @@
 <Window x:Class="YrClean.UI.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Schedule settings" Height="570" Width="400"
+        Title="Schedule settings" Height="670" Width="400"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Background="#1E1E1E"
         Foreground="#E1E1E1">
@@ -61,6 +61,10 @@
         </ComboBox>
 
         <CheckBox Name="NotifyCheck" Content="Show a notification after each run" Margin="0,16,0,0"/>
+
+        <CheckBox Name="MaintenanceCheck" Content="Monthly component store cleanup (DISM)" FontWeight="Bold" Margin="0,16,0,0"/>
+        <TextBlock Text="Day of month (1-28)" Foreground="#E1E1E1" Margin="0,8,0,4"/>
+        <TextBox Name="MaintenanceDayTextBox" Text="1"/>
 
         <TextBlock Text="Warn when free disk space is below (%)" Foreground="#E1E1E1" Margin="0,12,0,4"/>
         <TextBox Name="LowSpaceTextBox" Text="15"/>
