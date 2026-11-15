@@ -16,6 +16,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <TextBlock Name="SummaryText" Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
         <WrapPanel Name="ActionsPanel" Grid.Row="1">
             <WrapPanel.Resources>
@@ -25,6 +26,9 @@
                     <Setter Property="Margin" Value="0,0,8,8"/>
                 </Style>
             </WrapPanel.Resources>
+            <Button Name="CheckSystemButton" Content="Check system (DISM + SFC)"
+                    ToolTip="Repairs the Windows component store, then verifies system files. Can take 15-40 minutes."
+                    Click="CheckSystem_Click"/>
             <Button Name="ComponentCleanupButton" Content="Clean up component store"
                     ToolTip="DISM /Online /Cleanup-Image /StartComponentCleanup - removes superseded Windows components."
                     Click="ComponentCleanup_Click"/>

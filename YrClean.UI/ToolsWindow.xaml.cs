@@ -14,17 +14,41 @@ public partial class ToolsWindow : Window
     {
         InitializeComponent();
         SourceInitialized += (_, _) => DarkTitleBar.Apply(this);
-        Loaded += (_, _) => RefreshSummary();
+        Loaded += async (_, _) => await RefreshSummary();
     }
 
-    private void RefreshSummary()
+    private async Task RefreshSummary()
     {
         WindowsOldButton.Visibility = SystemMaintenance.WindowsOldExists ? Visibility.Visible : Visibility.Collapsed;
 
         var (binBytes, binItems) = SystemMaintenance.QueryRecycleBin();
         RecycleBinButton.Content = $"Empty Recycle Bin ({SizeFormatter.Format(binBytes)})";
         RecycleBinButton.IsEnabled = binItems > 0 && _running is null;
+
+        var lines = SystemHealth.GetDriveSpace().Select(d =>
+            $"{d.Name}  {SizeFormatter.Format(d.FreeBytes)} free of {SizeFormatter.Format(d.TotalBytes)} ({d.FreePercent:F0}%)").ToList();
+        SummaryText.Text = string.Join("\n", lines) + "\nDisk health: checking...";
+
+        // SMART is read through PowerShell, which takes a second or two
+        var disks = await Task.Run(SystemHealth.GetDiskHealth);
+        lines.Add(disks.Count == 0
+            ? "Disk health: not available on this system"
+            : "Disk health: " + string.Join(", ", disks.Select(d => $"{d.Name} - {d.StatusText}")));
+        if (disks.Any(d => d.NeedsAttention))
+            lines.Add("WARNING: a disk reports problems. Back up your data now.");
+        SummaryText.Text = string.Join("\n", lines);
     }
+
+    private async void CheckSystem_Click(object sender, RoutedEventArgs e) => await RunOperation(
+        "Check system",
+        "This runs DISM /RestoreHealth and then sfc /scannow. It can take 15-40 minutes and needs an internet connection.",
+        restorePoint: true,
+        (log, cancellation) =>
+        {
+            var results = SystemHealth.CheckSystem(log, cancellation);
+            return string.Join("\n\n", results.Select(r =>
+                $"{r.Tool}: {(r.Succeeded ? "completed" : $"reported a problem (exit code {r.ExitCode})")}\n{r.Verdict}"));
+        });
 
     private async void ComponentCleanup_Click(object sender, RoutedEventArgs e) => await RunOperation(
         "Clean up component store",
@@ -115,7 +139,7 @@ public partial class ToolsWindow : Window
         Log("");
         Log(summary);
         MessageBox.Show(this, summary, title, MessageBoxButton.OK, MessageBoxImage.Information);
-        RefreshSummary();
+        await RefreshSummary();
     }
 
     // Called from worker threads; progress lines move the bar instead of flooding the log

@@ -24,11 +24,24 @@ public class SystemToolsTests
         Assert.Null(ProcessRunner.TryParsePercent(line));
     }
 
+    [Fact]
+    public void Disk_health_parses_one_disk_or_many()
+    {
+        var one = SystemHealth.ParseDiskHealth("""{"FriendlyName":"Samsung SSD","HealthStatus":0}""");
+        var many = SystemHealth.ParseDiskHealth("""[{"FriendlyName":"A","HealthStatus":0},{"FriendlyName":"B","HealthStatus":2}]""");
+
+        Assert.False(Assert.Single(one).NeedsAttention);
+        Assert.Equal(new[] { false, true }, many.Select(d => d.NeedsAttention));
+        Assert.Empty(SystemHealth.ParseDiskHealth(""));
+    }
+
     // Read-only calls against the real machine: they must answer without throwing
     [Fact]
     public void Read_only_system_queries_work_on_this_machine()
     {
+        Assert.NotEmpty(SystemHealth.GetDriveSpace());
         Assert.True(SystemMaintenance.QueryRecycleBin().Bytes >= 0);
+        Assert.NotNull(SystemHealth.GetDiskHealth());
 
         var lines = new List<string>();
         var exitCode = ProcessRunner.Run(ProcessRunner.System32("cmd.exe"), new[] { "/c", "echo hello" }, lines.Add);
