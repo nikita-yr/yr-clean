@@ -243,6 +243,9 @@ public partial class MainWindow : Window
         RunScan();
     }
 
+    private void StartupButton_Click(object sender, RoutedEventArgs e) =>
+        new StartupWindow { Owner = this }.ShowDialog();
+
     private void QuarantineButton_Click(object sender, RoutedEventArgs e)
     {
         new QuarantineWindow { Owner = this }.ShowDialog();

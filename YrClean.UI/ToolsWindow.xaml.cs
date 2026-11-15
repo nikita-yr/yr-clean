@@ -36,6 +36,7 @@ public partial class ToolsWindow : Window
             : "Disk health: " + string.Join(", ", disks.Select(d => $"{d.Name} - {d.StatusText}")));
         if (disks.Any(d => d.NeedsAttention))
             lines.Add("WARNING: a disk reports problems. Back up your data now.");
+        lines.Add($"Startup programs: {StartupManager.GetItems().Count(i => i.Enabled)} enabled");
         SummaryText.Text = string.Join("\n", lines);
     }
 
