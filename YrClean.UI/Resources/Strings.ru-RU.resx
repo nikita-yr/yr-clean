@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Common_Cancelled" xml:space="preserve"><value>Отменено.</value></data>
+  <data name="Common_Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="Common_Failed" xml:space="preserve"><value>Ошибка: {0}</value></data>
+  <data name="Common_NoFilesSelected" xml:space="preserve"><value>Файлы не выбраны.</value></data>
+  <data name="Common_Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="Common_Proceed" xml:space="preserve"><value>Продолжить?</value></data>
+  <data name="Common_Scanning" xml:space="preserve"><value>Идёт поиск...</value></data>
+  <data name="Age_1Day" xml:space="preserve"><value>1 дня</value></data>
+  <data name="Age_1Week" xml:space="preserve"><value>1 недели</value></data>
+  <data name="Age_2Weeks" xml:space="preserve"><value>2 недель</value></data>
+  <data name="Age_1Month" xml:space="preserve"><value>1 месяца</value></data>
+  <data name="Age_3Months" xml:space="preserve"><value>3 месяцев</value></data>
+  <data name="Age_6Months" xml:space="preserve"><value>6 месяцев</value></data>
+  <data name="Age_1Year" xml:space="preserve"><value>1 года</value></data>
+  <data name="Age_Custom" xml:space="preserve"><value>Другое...</value></data>
+  <data name="Day_Monday" xml:space="preserve"><value>Понедельник</value></data>
+  <data name="Day_Tuesday" xml:space="preserve"><value>Вторник</value></data>
+  <data name="Day_Wednesday" xml:space="preserve"><value>Среда</value></data>
+  <data name="Day_Thursday" xml:space="preserve"><value>Четверг</value></data>
+  <data name="Day_Friday" xml:space="preserve"><value>Пятница</value></data>
+  <data name="Day_Saturday" xml:space="preserve"><value>Суббота</value></data>
+  <data name="Day_Sunday" xml:space="preserve"><value>Воскресенье</value></data>
+  <data name="Freq_Hourly" xml:space="preserve"><value>Каждый час</value></data>
+  <data name="Freq_Daily" xml:space="preserve"><value>Каждый день</value></data>
+  <data name="Freq_Weekly" xml:space="preserve"><value>Каждую неделю</value></data>
+  <data name="Lang_System" xml:space="preserve"><value>Как в Windows</value></data>
+  <data name="Drive_Line" xml:space="preserve"><value>{0}  свободно {1} из {2} ({3}%)</value></data>
+  <data name="Drive_Low" xml:space="preserve"><value>МАЛО МЕСТА (меньше {0}%)</value></data>
+  <data name="LowSpace_Drive" xml:space="preserve"><value>на {0} свободно {1} ({2}%)</value></data>
+  <data name="Health_Healthy" xml:space="preserve"><value>исправен</value></data>
+  <data name="Health_Warning" xml:space="preserve"><value>предупреждение</value></data>
+  <data name="Health_Unhealthy" xml:space="preserve"><value>неисправен</value></data>
+  <data name="Health_Unknown" xml:space="preserve"><value>неизвестно</value></data>
+  <data name="Main_SelectAll" xml:space="preserve"><value>Выбрать все</value></data>
+  <data name="Main_Clean" xml:space="preserve"><value>Очистить</value></data>
+  <data name="Main_CleanOlderThan" xml:space="preserve"><value>Очистить &gt; {0} дн.</value></data>
+  <data name="Main_Quarantine" xml:space="preserve"><value>Карантин</value></data>
+  <data name="Main_QuarantineTip" xml:space="preserve"><value>Просмотр и восстановление очищенных файлов</value></data>
+  <data name="Main_System" xml:space="preserve"><value>Система</value></data>
+  <data name="Main_SystemTip" xml:space="preserve"><value>Средства очистки и восстановления Windows</value></data>
+  <data name="Main_Startup" xml:space="preserve"><value>Автозагрузка</value></data>
+  <data name="Main_StartupTip" xml:space="preserve"><value>Программы, которые запускаются вместе с Windows</value></data>
+  <data name="Main_Disk" xml:space="preserve"><value>Диск</value></data>
+  <data name="Main_DiskTip" xml:space="preserve"><value>Самые большие папки и файлы, старые файлы, дубликаты</value></data>
+  <data name="Main_Leftovers" xml:space="preserve"><value>Остатки</value></data>
+  <data name="Main_LeftoversTip" xml:space="preserve"><value>Папки, службы, задания и ярлыки, оставшиеся от удалённых программ</value></data>
+  <data name="Main_LowSpace" xml:space="preserve"><value>Мало места на диске: {0}. Порог предупреждения: {1}%.</value></data>
+  <data name="Main_NothingToClean" xml:space="preserve"><value>Нечего очищать</value></data>
+  <data name="Main_NoneCleanable" xml:space="preserve"><value>Ни один из выбранных файлов ({0}) сейчас нельзя очистить.</value></data>
+  <data name="Main_CleanupComplete" xml:space="preserve"><value>Очистка завершена</value></data>
+  <data name="Main_ConfirmTitle" xml:space="preserve"><value>Подтверждение очистки</value></data>
+  <data name="Main_ConfirmText" xml:space="preserve"><value>Файлов для переноса в карантин: {0}, общий размер {1}. Их можно восстановить в течение {2} дн.</value></data>
+  <data name="Main_AdminBackground" xml:space="preserve"><value>Файлов, для которых нужны права администратора: {0}. Они обрабатываются в фоне; о результате сообщит уведомление Windows.</value></data>
+  <data name="Main_AdminCancelled" xml:space="preserve"><value>Файлов, для которых нужны права администратора: {0}. Они оставлены на месте, потому что запрос контроля учётных записей был отклонён.</value></data>
+  <data name="Main_MovedOf" xml:space="preserve"><value>Перенесено в карантин: {0} из {1}</value></data>
+  <data name="Main_SizeFreedLater" xml:space="preserve"><value>Размер: {0} (место освободится, когда истечёт срок карантина, через {1} дн.)</value></data>
+  <data name="Main_LeftInPlace" xml:space="preserve"><value>Оставлено на месте: {0}</value></data>
+  <data name="Main_DetailsLog" xml:space="preserve"><value>Подробности: autoclean.log</value></data>
+  <data name="Main_MovableNow" xml:space="preserve"><value>можно перенести сейчас: {0} ({1})</value></data>
+  <data name="Main_NeedAdmin" xml:space="preserve"><value>нужны права администратора: {0} ({1}) - один запрос контроля учётных записей</value></data>
+  <data name="Main_ExpertWarning" xml:space="preserve"><value>ВНИМАНИЕ: выбраны источники экспертного уровня: {0}.\nИх очистка может замедлить Windows или изменить её поведение.</value></data>
+  <data name="Main_ExclusionAdded" xml:space="preserve"><value>Добавлено в исключения:\n{0}</value></data>
+  <data name="Main_ExclusionsTitle" xml:space="preserve"><value>Исключения</value></data>
+  <data name="Menu_OpenFolder" xml:space="preserve"><value>Открыть расположение папки</value></data>
+  <data name="Menu_OpenFile" xml:space="preserve"><value>Открыть расположение файла</value></data>
+  <data name="Menu_SearchWeb" xml:space="preserve"><value>Найти в Интернете</value></data>
+  <data name="Menu_AddExclusion" xml:space="preserve"><value>Добавить в исключения</value></data>
+  <data name="Node_FileCount" xml:space="preserve"><value>файлов: {0}</value></data>
+  <data name="Node_Review" xml:space="preserve"><value>на проверку</value></data>
+  <data name="Node_Expert" xml:space="preserve"><value>эксперт</value></data>
+  <data name="Node_Busy" xml:space="preserve"><value>занято - закройте программу, чтобы очистить</value></data>
+  <data name="Skip_TooRecent" xml:space="preserve"><value>слишком новые (использовались за последние {0} дн.)</value></data>
+  <data name="Skip_Protected" xml:space="preserve"><value>защищённый тип файла</value></data>
+  <data name="Skip_Excluded" xml:space="preserve"><value>в ваших исключениях</value></data>
+  <data name="Skip_Reparse" xml:space="preserve"><value>точка повторной обработки / символическая ссылка</value></data>
+  <data name="Skip_OutsideRoot" xml:space="preserve"><value>вне разрешённых папок</value></data>
+  <data name="Skip_Missing" xml:space="preserve"><value>уже отсутствуют</value></data>
+  <data name="Skip_InUse" xml:space="preserve"><value>заняты другим процессом</value></data>
+  <data name="Skip_AccessDenied" xml:space="preserve"><value>отказано в доступе</value></data>
+  <data name="Skip_OtherErrors" xml:space="preserve"><value>другие ошибки</value></data>
+  <data name="Notify_ElevatedMoved" xml:space="preserve"><value>В карантин перенесено {0} из {1} файлов, требующих прав администратора, {2}.</value></data>
+  <data name="Notify_ElevatedLeft" xml:space="preserve"><value>Оставлено на месте: {0} (подробности в autoclean.log).</value></data>
+  <data name="Notify_LowSpace" xml:space="preserve"><value>Мало места на диске: {0}</value></data>
+  <data name="Notify_AutoClean" xml:space="preserve"><value>Файлов перенесено в карантин: {0}, {1}.</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Параметры</value></data>
+  <data name="Settings_Enable" xml:space="preserve"><value>Включить автоочистку по расписанию</value></data>
+  <data name="Settings_OlderThan" xml:space="preserve"><value>Очищать файлы старше</value></data>
+  <data name="Settings_CustomDays" xml:space="preserve"><value>Своё число дней</value></data>
+  <data name="Settings_Frequency" xml:space="preserve"><value>Как часто</value></data>
+  <data name="Settings_DayOfWeek" xml:space="preserve"><value>День недели</value></data>
+  <data name="Settings_Notify" xml:space="preserve"><value>Показывать уведомление после каждого запуска</value></data>
+  <data name="Settings_Maintenance" xml:space="preserve"><value>Ежемесячная очистка хранилища компонентов (DISM)</value></data>
+  <data name="Settings_DayOfMonth" xml:space="preserve"><value>День месяца (1-28)</value></data>
+  <data name="Settings_LowSpace" xml:space="preserve"><value>Предупреждать, если свободного места меньше (%)</value></data>
+  <data name="Settings_Winapp2" xml:space="preserve"><value>Использовать правила winapp2.ini из папки правил (уровень «на проверку»)</value></data>
+  <data name="Settings_QuarantineDays" xml:space="preserve"><value>Хранить очищенные файлы в карантине (дней)</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Язык</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="Settings_Saved" xml:space="preserve"><value>Параметры сохранены, задания планировщика обновлены.</value></data>
+  <data name="Settings_SavedNoSchedule" xml:space="preserve"><value>Параметры сохранены. Автоочистка по расписанию отключена.</value></data>
+  <data name="Err_CustomDays" xml:space="preserve"><value>Число дней должно быть целым положительным числом.</value></data>
+  <data name="Err_QuarantineDays" xml:space="preserve"><value>Срок карантина должен быть целым положительным числом.</value></data>
+  <data name="Err_LowSpace" xml:space="preserve"><value>Порог свободного места должен быть целым числом от 0 до 99.</value></data>
+  <data name="Err_DayOfMonth" xml:space="preserve"><value>День месяца должен быть целым числом от 1 до 28.</value></data>
+  <data name="Err_TaskFailed" xml:space="preserve"><value>Не удалось обновить задания планировщика.</value></data>
+  <data name="Quar_Title" xml:space="preserve"><value>Карантин и журнал</value></data>
+  <data name="Quar_Restore" xml:space="preserve"><value>Восстановить выбранное</value></data>
+  <data name="Quar_Summary" xml:space="preserve"><value>В карантине: файлов - {0}, {1}. Файлы удаляются окончательно через {2} дн. после очистки.</value></data>
+  <data name="Quar_Restored" xml:space="preserve"><value>Файлов восстановлено: {0}.</value></data>
+  <data name="Quar_NotRestored" xml:space="preserve"><value>Не восстановлено: {0}</value></data>
+  <data name="Quar_Operation" xml:space="preserve"><value>{0}  {1}  -  файлов: {2}</value></data>
+  <data name="Quar_Restorable" xml:space="preserve"><value>можно восстановить: {0}</value></data>
+  <data name="Start_Title" xml:space="preserve"><value>Автозагрузка</value></data>
+  <data name="Start_Tip" xml:space="preserve"><value>Запускать вместе с Windows</value></data>
+  <data name="Start_Summary" xml:space="preserve"><value>Запускается вместе с Windows: {0} из {1}. Снимите флажок, чтобы отключить элемент: он останется на месте, и его можно включить снова в любой момент.</value></data>
+  <data name="Start_Failed" xml:space="preserve"><value>Не удалось изменить «{0}».</value></data>
+  <data name="Start_Missing" xml:space="preserve"><value>исполняемый файл не найден</value></data>
+  <data name="Start_UnknownPublisher" xml:space="preserve"><value>неизвестный издатель</value></data>
+  <data name="Start_KindRegistry" xml:space="preserve"><value>Реестр</value></data>
+  <data name="Start_KindFolder" xml:space="preserve"><value>Папка «Автозагрузка»</value></data>
+  <data name="Start_KindTask" xml:space="preserve"><value>Планировщик заданий</value></data>
+  <data name="Disk_Title" xml:space="preserve"><value>Место на диске</value></data>
+  <data name="Disk_Folder" xml:space="preserve"><value>Папка:</value></data>
+  <data name="Disk_Browse" xml:space="preserve"><value>Обзор...</value></data>
+  <data name="Disk_Largest" xml:space="preserve"><value>Самые большие папки и файлы</value></data>
+  <data name="Disk_Old" xml:space="preserve"><value>Старые файлы (90+ дней)</value></data>
+  <data name="Disk_Duplicates" xml:space="preserve"><value>Дубликаты</value></data>
+  <data name="Disk_ViewOnly" xml:space="preserve"><value>Только просмотр - здесь ничего не удаляется автоматически.</value></data>
+  <data name="Disk_LargestFolders" xml:space="preserve"><value>Самые большие папки в {0}</value></data>
+  <data name="Disk_LargestFiles" xml:space="preserve"><value>Самые большие файлы</value></data>
+  <data name="Disk_OldSummary" xml:space="preserve"><value>Файлов, не изменявшихся {0}+ дн.: {1}, общий размер {2}</value></data>
+  <data name="Disk_DuplicatesSummary" xml:space="preserve"><value>Групп одинаковых файлов (от 1 МБ): {0}, лишние копии занимают {1}</value></data>
+  <data name="Disk_DuplicateGroup" xml:space="preserve"><value>Копий: {0}, каждая по {1}</value></data>
+  <data name="Disk_NoFolder" xml:space="preserve"><value>Такой папки не существует.</value></data>
+  <data name="Disk_Modified" xml:space="preserve"><value>изменён {0}</value></data>
+  <data name="Left_Title" xml:space="preserve"><value>Остатки программ</value></data>
+  <data name="Left_Move" xml:space="preserve"><value>Перенести выбранные папки в карантин</value></data>
+  <data name="Left_Folders" xml:space="preserve"><value>Папки, которые не относятся ни к одной установленной программе</value></data>
+  <data name="Left_Services" xml:space="preserve"><value>Службы, программа которых отсутствует (только просмотр)</value></data>
+  <data name="Left_Tasks" xml:space="preserve"><value>Задания планировщика, программа которых отсутствует (только просмотр)</value></data>
+  <data name="Left_Shortcuts" xml:space="preserve"><value>Ярлыки, объект которых отсутствует (только просмотр)</value></data>
+  <data name="Left_None" xml:space="preserve"><value>Остатков не найдено.</value></data>
+  <data name="Left_Hint" xml:space="preserve"><value>Это кандидаты, а не приговор: проверьте каждый, прежде чем что-то делать. Ничего не выбирается и не удаляется автоматически.</value></data>
+  <data name="Left_NoneSelected" xml:space="preserve"><value>Папки не выбраны.</value></data>
+  <data name="Left_Confirm" xml:space="preserve"><value>Перенести файлы выбранных папок ({0}, {1}) в карантин?</value></data>
+  <data name="Left_ConfirmNote" xml:space="preserve"><value>Их можно восстановить в течение {0} дн. Программы, скрипты и файлы, которые использовались за последние {1} дн., останутся на месте.</value></data>
+  <data name="Left_Result" xml:space="preserve"><value>Файлов перенесено в карантин: {0}.\nОставлено на месте: {1}.</value></data>
+  <data name="Left_FolderDetail" xml:space="preserve"><value>не соответствует ни одной установленной программе, не менялась {0}+ дн.</value></data>
+  <data name="Left_MissingDetail" xml:space="preserve"><value>отсутствует: {0}</value></data>
+  <data name="Tools_Title" xml:space="preserve"><value>Системные средства</value></data>
+  <data name="Tools_Ready" xml:space="preserve"><value>Готово.</value></data>
+  <data name="Tools_Check" xml:space="preserve"><value>Проверить систему (DISM + SFC)</value></data>
+  <data name="Tools_CheckTip" xml:space="preserve"><value>Восстанавливает хранилище компонентов Windows, затем проверяет системные файлы. Может занять 15-40 минут.</value></data>
+  <data name="Tools_CheckExplain" xml:space="preserve"><value>Будут выполнены DISM /RestoreHealth и затем sfc /scannow. Это может занять 15-40 минут и требует подключения к Интернету.</value></data>
+  <data name="Tools_Component" xml:space="preserve"><value>Очистить хранилище компонентов</value></data>
+  <data name="Tools_ComponentTip" xml:space="preserve"><value>DISM /Online /Cleanup-Image /StartComponentCleanup - удаляет заменённые компоненты Windows.</value></data>
+  <data name="Tools_ComponentExplain" xml:space="preserve"><value>DISM удалит заменённые компоненты Windows. После этого уже установленные обновления нельзя будет удалить.</value></data>
+  <data name="Tools_UpdateCache" xml:space="preserve"><value>Очистить кэш Центра обновления Windows</value></data>
+  <data name="Tools_UpdateCacheTip" xml:space="preserve"><value>Останавливает службу «Центр обновления Windows», переносит старые загруженные файлы обновлений в карантин и снова запускает службу.</value></data>
+  <data name="Tools_UpdateCacheExplain" xml:space="preserve"><value>Служба «Центр обновления Windows» будет ненадолго остановлена, пока старые загруженные файлы обновлений переносятся в карантин.</value></data>
+  <data name="Tools_UpdateCacheResult" xml:space="preserve"><value>Файлов перенесено в карантин: {0}, {1}.\nОставлено на месте: {2} (слишком новые, защищённые или занятые).</value></data>
+  <data name="Tools_RecycleBin" xml:space="preserve"><value>Очистить корзину</value></data>
+  <data name="Tools_RecycleBinSize" xml:space="preserve"><value>Очистить корзину ({0})</value></data>
+  <data name="Tools_RecycleBinExplain" xml:space="preserve"><value>Всё содержимое корзины на всех дисках будет удалено безвозвратно. Отменить это нельзя.</value></data>
+  <data name="Tools_RecycleBinDone" xml:space="preserve"><value>Корзина пуста.</value></data>
+  <data name="Tools_RecycleBinFailed" xml:space="preserve"><value>Windows не удалось очистить корзину.</value></data>
+  <data name="Tools_WindowsOld" xml:space="preserve"><value>Удалить Windows.old (эксперт)</value></data>
+  <data name="Tools_WindowsOldTip" xml:space="preserve"><value>Удаляет предыдущую установку Windows. Вернуться к ней будет уже нельзя.</value></data>
+  <data name="Tools_WindowsOldExplain" xml:space="preserve"><value>В папке {0} хранится предыдущая установка Windows. После её удаления вернуться к той версии будет нельзя, и восстановить её из карантина тоже не получится.</value></data>
+  <data name="Tools_WindowsOldRemoved" xml:space="preserve"><value>Папка Windows.old удалена.</value></data>
+  <data name="Tools_WindowsOldStill" xml:space="preserve"><value>Папка Windows.old осталась на месте.</value></data>
+  <data name="Tools_RestorePoint" xml:space="preserve"><value>Создать точку восстановления</value></data>
+  <data name="Tools_RestorePointExplain" xml:space="preserve"><value>Создаёт точку восстановления системы. Windows разрешает одну точку в 24 часа, в остальных случаях запрос пропускается.</value></data>
+  <data name="Tools_RestorePointDone" xml:space="preserve"><value>Запрос на создание точки восстановления отправлен.</value></data>
+  <data name="Tools_RestorePointFailed" xml:space="preserve"><value>Windows отказалась создать точку восстановления. Возможно, защита системы отключена для системного диска.</value></data>
+  <data name="Tools_RestorePointFirst" xml:space="preserve"><value>Сначала будет создана точка восстановления.</value></data>
+  <data name="Tools_RestorePointContinue" xml:space="preserve"><value>Не удалось создать точку восстановления (возможно, защита системы отключена).\n\nПродолжить без неё?</value></data>
+  <data name="Tools_StillRunning" xml:space="preserve"><value>Операция ещё выполняется. Сначала отмените её.</value></data>
+  <data name="Tools_ToolCompleted" xml:space="preserve"><value>{0}: завершено</value></data>
+  <data name="Tools_ToolProblem" xml:space="preserve"><value>{0}: обнаружена проблема (код завершения {1})</value></data>
+  <data name="Tools_HealthChecking" xml:space="preserve"><value>Состояние дисков: проверка...</value></data>
+  <data name="Tools_HealthUnavailable" xml:space="preserve"><value>Состояние дисков: в этой системе недоступно</value></data>
+  <data name="Tools_Health" xml:space="preserve"><value>Состояние дисков: {0}</value></data>
+  <data name="Tools_HealthWarning" xml:space="preserve"><value>ВНИМАНИЕ: диск сообщает о проблемах. Сделайте резервную копию данных прямо сейчас.</value></data>
+  <data name="Tools_StartupCount" xml:space="preserve"><value>Включённых программ в автозагрузке: {0}</value></data>
+</root>

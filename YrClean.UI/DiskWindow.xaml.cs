@@ -26,8 +26,8 @@ public partial class DiskWindow : Window
 
         var threshold = SettingsService.Load().LowSpaceThresholdPercent;
         DrivesText.Text = string.Join("\n", SystemHealth.GetDriveSpace().Select(d =>
-            $"{d.Name}  {SizeFormatter.Format(d.FreeBytes)} free of {SizeFormatter.Format(d.TotalBytes)} ({d.FreePercent:F0}%)" +
-            (d.FreePercent < threshold ? $"  -  LOW DISK SPACE (below {threshold}%)" : "")));
+            L.DriveLine(d) +
+            (d.FreePercent < threshold ? "  -  " + L.T("Drive_Low", threshold) : "")));
     }
 
     private void Browse_Click(object sender, RoutedEventArgs e)
@@ -40,9 +40,9 @@ public partial class DiskWindow : Window
     private async void Analyze_Click(object sender, RoutedEventArgs e) => await Run((folder, cancellation) =>
     {
         var analysis = DiskAnalyzer.Analyze(folder, cancellation: cancellation);
-        return new[] { DiskRow.Header($"Largest folders in {folder}") }
+        return new[] { DiskRow.Header(L.T("Disk_LargestFolders", folder)) }
             .Concat(analysis.Folders.Select(DiskRow.Item))
-            .Append(DiskRow.Header("Largest files"))
+            .Append(DiskRow.Header(L.T("Disk_LargestFiles")))
             .Concat(analysis.Files.Select(DiskRow.Item))
             .ToList();
     });
@@ -50,7 +50,7 @@ public partial class DiskWindow : Window
     private async void OldFiles_Click(object sender, RoutedEventArgs e) => await Run((folder, _) =>
     {
         var files = DiskAnalyzer.OldFiles(folder, OldFileDays);
-        return new[] { DiskRow.Header($"{files.Count} files not modified for {OldFileDays}+ days, {SizeFormatter.Format(files.Sum(f => f.Bytes))} in total") }
+        return new[] { DiskRow.Header(L.T("Disk_OldSummary", OldFileDays, files.Count, SizeFormatter.Format(files.Sum(f => f.Bytes)))) }
             .Concat(files.Take(500).Select(DiskRow.Item))
             .ToList();
     });
@@ -59,10 +59,10 @@ public partial class DiskWindow : Window
     {
         var groups = DiskAnalyzer.FindDuplicates(folder, cancellation: cancellation);
         var wasted = groups.Sum(g => g[0].Bytes * (g.Count - 1));
-        var rows = new List<DiskRow> { DiskRow.Header($"{groups.Count} groups of identical files (1 MB and larger), {SizeFormatter.Format(wasted)} in extra copies") };
+        var rows = new List<DiskRow> { DiskRow.Header(L.T("Disk_DuplicatesSummary", groups.Count, SizeFormatter.Format(wasted))) };
         foreach (var group in groups.Take(200))
         {
-            rows.Add(DiskRow.Header($"{group.Count} copies x {SizeFormatter.Format(group[0].Bytes)}"));
+            rows.Add(DiskRow.Header(L.T("Disk_DuplicateGroup", group.Count, SizeFormatter.Format(group[0].Bytes))));
             rows.AddRange(group.Select(DiskRow.Item));
         }
 
@@ -74,7 +74,7 @@ public partial class DiskWindow : Window
         var folder = FolderBox.Text.Trim();
         if (!Directory.Exists(folder))
         {
-            StatusText.Text = "That folder does not exist.";
+            StatusText.Text = L.T("Disk_NoFolder");
             return;
         }
 
@@ -82,20 +82,20 @@ public partial class DiskWindow : Window
         var cancellation = _running.Token;
         ActionsPanel.IsEnabled = false;
         CancelButton.IsEnabled = true;
-        StatusText.Text = "Scanning...";
+        StatusText.Text = L.T("Common_Scanning");
 
         try
         {
             ResultsList.ItemsSource = await Task.Run(() => work(folder, cancellation), cancellation);
-            StatusText.Text = "View only - nothing here is deleted automatically.";
+            StatusText.Text = L.T("Disk_ViewOnly");
         }
         catch (OperationCanceledException)
         {
-            StatusText.Text = "Cancelled.";
+            StatusText.Text = L.T("Common_Cancelled");
         }
         catch (Exception ex)
         {
-            StatusText.Text = "Failed: " + ex.Message;
+            StatusText.Text = L.T("Common_Failed", ex.Message);
         }
         finally
         {
@@ -133,7 +133,7 @@ public class DiskRow
     public static DiskRow Item(SizedPath item) => new()
     {
         Title = System.IO.Path.GetFileName(item.Path),
-        Detail = $"{item.Path}  ·  modified {item.Modified:yyyy-MM-dd}",
+        Detail = item.Path + "  ·  " + L.T("Disk_Modified", item.Modified.ToString("yyyy-MM-dd")),
         SizeDisplay = SizeFormatter.Format(item.Bytes),
         Path = item.Path
     };

@@ -19,9 +19,7 @@ public partial class StartupWindow : Window
     {
         var rows = StartupManager.GetItems().Select(item => new StartupRow(item)).ToList();
         ItemsList.ItemsSource = rows;
-        SummaryText.Text =
-            $"{rows.Count(r => r.Enabled)} of {rows.Count} entries start with Windows. " +
-            "Untick an entry to disable it - it stays in place and can be switched back on at any time.";
+        SummaryText.Text = L.T("Start_Summary", rows.Count(r => r.Enabled), rows.Count);
     }
 
     private void EnabledCheck_Click(object sender, RoutedEventArgs e)
@@ -30,7 +28,7 @@ public partial class StartupWindow : Window
             return;
 
         if (!StartupManager.SetEnabled(row.Item, check.IsChecked == true))
-            MessageBox.Show(this, $"Could not change '{row.Name}'.", Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, L.T("Start_Failed", row.Name), Title, MessageBoxButton.OK, MessageBoxImage.Warning);
 
         Reload();
     }
@@ -46,10 +44,15 @@ public class StartupRow
     public string Command => Item.Command;
 
     public string Details =>
-        Item.Location + (string.IsNullOrWhiteSpace(Item.Publisher) ? "" : "  ·  " + Item.Publisher);
+        L.T(Item.Kind switch
+        {
+            StartupKind.StartupFolder => "Start_KindFolder",
+            StartupKind.ScheduledTask => "Start_KindTask",
+            _ => "Start_KindRegistry"
+        }) + ": " + Item.Location + (string.IsNullOrWhiteSpace(Item.Publisher) ? "" : "  ·  " + Item.Publisher);
 
     public string Flags =>
-        Item.FileMissing ? "executable not found"
-        : Item.UnknownPublisher && Item.ExecutablePath is not null ? "unknown publisher"
+        Item.FileMissing ? L.T("Start_Missing")
+        : Item.UnknownPublisher && Item.ExecutablePath is not null ? L.T("Start_UnknownPublisher")
         : "";
 }

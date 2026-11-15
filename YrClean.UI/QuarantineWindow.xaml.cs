@@ -38,8 +38,7 @@ public partial class QuarantineWindow : Window
         OperationsTree.ItemsSource = _operations;
 
         SummaryText.Text =
-            $"In quarantine: {batches.Sum(b => b.Entries.Count)} files, {SizeFormatter.Format(batches.Sum(b => b.TotalBytes))}. " +
-            $"Files are deleted permanently {settings.QuarantineDays} days after they were cleaned.";
+            L.T("Quar_Summary", batches.Sum(b => b.Entries.Count), SizeFormatter.Format(batches.Sum(b => b.TotalBytes)), settings.QuarantineDays);
     }
 
     private void RestoreButton_Click(object sender, RoutedEventArgs e)
@@ -63,13 +62,13 @@ public partial class QuarantineWindow : Window
 
         if (restored == 0 && errors.Count == 0)
         {
-            MessageBox.Show(this, "No files selected.", Title, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, L.T("Common_NoFilesSelected"), Title, MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        var message = $"Restored: {restored} files.";
+        var message = L.T("Quar_Restored", restored);
         if (errors.Count > 0)
-            message += $"\n\nNot restored: {errors.Count}\n" + string.Join("\n", errors.Take(10));
+            message += "\n\n" + L.T("Quar_NotRestored", errors.Count) + "\n" + string.Join("\n", errors.Take(10));
 
         MessageBox.Show(this, message, Title, MessageBoxButton.OK,
             errors.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
@@ -80,9 +79,9 @@ public partial class QuarantineWindow : Window
 public class OperationNode : SelectableNodeBase
 {
     public OperationNode(JournalEntry entry, QuarantineBatchInfo? batch)
-        : base($"{entry.Time:yyyy-MM-dd HH:mm}  {entry.Kind}  -  {entry.Items} files" +
+        : base(L.T("Quar_Operation", entry.Time.ToString("yyyy-MM-dd HH:mm"), entry.Kind, entry.Items) +
                (entry.Note is null ? "" : $"  ({entry.Note})"),
-               batch is null ? "" : $"{SizeFormatter.Format(batch.TotalBytes)} restorable")
+               batch is null ? "" : L.T("Quar_Restorable", SizeFormatter.Format(batch.TotalBytes)))
     {
         BatchId = batch?.Id;
         Children = (batch?.Entries ?? new List<QuarantineEntry>())

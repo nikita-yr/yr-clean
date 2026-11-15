@@ -11,13 +11,15 @@ public enum LeftoverKind
     Shortcut
 }
 
-public record Leftover(LeftoverKind Kind, string Name, string Detail, string? Path, long Bytes);
+// Location says where the item lives (folder path, service key name, task name, shortcut path);
+// MissingTarget is the program it points at that no longer exists; Path is what Explorer can open.
+public record Leftover(LeftoverKind Kind, string Name, string Location, string? MissingTarget, string? Path, long Bytes);
 
 // Finds what uninstalled programs left behind. Everything here is a candidate for a person to
 // review: the scan itself changes nothing, and only folders can be removed (via quarantine).
 public static class LeftoverScanner
 {
-    private const int InactiveDays = 30;
+    public const int InactiveDays = 30;
     private const string ServicesKey = @"SYSTEM\CurrentControlSet\Services";
 
     // Folders that belong to Windows or are shared by many programs, never candidates
@@ -119,7 +121,7 @@ public static class LeftoverScanner
                     continue;
 
                 yield return new Leftover(LeftoverKind.Folder, folder.Name,
-                    $"{folder.FullName}  ·  no installed program matches, untouched for {InactiveDays}+ days",
+                    folder.FullName, null,
                     folder.FullName, files.Sum(f => f.SizeBytes));
             }
         }
@@ -146,7 +148,7 @@ public static class LeftoverScanner
                 if (executable is not null && !File.Exists(executable))
                 {
                     found.Add(new Leftover(LeftoverKind.Service, service.GetValue("DisplayName") as string ?? name,
-                        $"Service '{name}'  ·  missing: {executable}", null, 0));
+                        name, executable, null, 0));
                 }
             }
         }
@@ -182,7 +184,7 @@ public static class LeftoverScanner
             }
 
             if (executable is not null && !File.Exists(executable))
-                yield return new Leftover(LeftoverKind.Task, Path.GetFileName(file), $"Task {taskName}  ·  missing: {executable}", null, 0);
+                yield return new Leftover(LeftoverKind.Task, Path.GetFileName(file), taskName, executable, null, 0);
         }
     }
 
@@ -204,7 +206,7 @@ public static class LeftoverScanner
                 Directory.Exists(Path.GetPathRoot(target)))
             {
                 yield return new Leftover(LeftoverKind.Shortcut, Path.GetFileNameWithoutExtension(shortcut),
-                    $"{shortcut}  ·  missing: {target}", shortcut, 0);
+                    shortcut, target, shortcut, 0);
             }
         }
     }

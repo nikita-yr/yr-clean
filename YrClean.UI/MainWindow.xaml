@@ -21,7 +21,7 @@
                 Padding="12,10">
             <StackPanel Orientation="Horizontal">
                 <CheckBox Name="SelectAllCheck"
-                          Content="Select all"
+                          Content="{local:Loc Main_SelectAll}"
                           Foreground="{DynamicResource TextPrimary}"
                           VerticalAlignment="Center"
                           Margin="0,0,20,0"
@@ -29,50 +29,50 @@
                           Unchecked="SelectAllCheck_Unchecked"/>
 
                 <Button Name="CleanButton"
-                        Content="Clean"
+                        Content="{local:Loc Main_Clean}"
                         Width="150" Height="40"
                         Margin="0,0,10,0"
                         Click="CleanButton_Click"/>
 
                 <Button Name="QuarantineButton"
-                        Content="Quarantine"
+                        Content="{local:Loc Main_Quarantine}"
                         Width="110" Height="40"
                         Margin="0,0,10,0"
-                        ToolTip="Review and restore cleaned files"
+                        ToolTip="{local:Loc Main_QuarantineTip}"
                         Click="QuarantineButton_Click"/>
 
                 <Button Name="ToolsButton"
-                        Content="System"
+                        Content="{local:Loc Main_System}"
                         Width="90" Height="40"
                         Margin="0,0,10,0"
-                        ToolTip="Windows cleanup and repair tools"
+                        ToolTip="{local:Loc Main_SystemTip}"
                         Click="ToolsButton_Click"/>
 
                 <Button Name="StartupButton"
-                        Content="Startup"
+                        Content="{local:Loc Main_Startup}"
                         Width="90" Height="40"
                         Margin="0,0,10,0"
-                        ToolTip="Programs that start with Windows"
+                        ToolTip="{local:Loc Main_StartupTip}"
                         Click="StartupButton_Click"/>
 
                 <Button Name="DiskButton"
-                        Content="Disk"
+                        Content="{local:Loc Main_Disk}"
                         Width="70" Height="40"
                         Margin="0,0,10,0"
-                        ToolTip="Largest folders and files, old files, duplicates"
+                        ToolTip="{local:Loc Main_DiskTip}"
                         Click="DiskButton_Click"/>
 
                 <Button Name="LeftoversButton"
-                        Content="Leftovers"
+                        Content="{local:Loc Main_Leftovers}"
                         Width="100" Height="40"
                         Margin="0,0,10,0"
-                        ToolTip="Folders, services, tasks and shortcuts left by removed programs"
+                        ToolTip="{local:Loc Main_LeftoversTip}"
                         Click="LeftoversButton_Click"/>
 
                 <Button Name="ScheduleButton"
                         Width="36" Height="36"
                     Padding="0"
-                        ToolTip="Schedule settings"
+                        ToolTip="{local:Loc Settings_Title}"
                         Click="ScheduleButton_Click">
                     <TextBlock Text="&#xE713;"
                                FontFamily="Segoe MDL2 Assets"
@@ -103,9 +103,9 @@
                 <!-- Shared by source and group rows; x:Shared=False gives each row its own instance -->
                 <ContextMenu x:Key="FolderContextMenu" x:Shared="False"
                              Opened="ContextMenu_Opened" Closed="ContextMenu_Closed">
-                    <MenuItem Header="Open folder location" Click="OpenLocation_Click"/>
-                    <MenuItem Header="Search on the web" Click="SearchWeb_Click"/>
-                    <MenuItem Header="Add to exclusions" Click="AddToExclusions_Click"/>
+                    <MenuItem Header="{local:Loc Menu_OpenFolder}" Click="OpenLocation_Click"/>
+                    <MenuItem Header="{local:Loc Menu_SearchWeb}" Click="SearchWeb_Click"/>
+                    <MenuItem Header="{local:Loc Menu_AddExclusion}" Click="AddToExclusions_Click"/>
                 </ContextMenu>
 
                 <HierarchicalDataTemplate DataType="{x:Type local:CacheSourceNode}" ItemsSource="{Binding Children}">
@@ -150,8 +150,8 @@
                         <TextBlock Grid.Column="2" Text="{Binding SizeDisplay}" Foreground="{DynamicResource TextSecondary}" Margin="20,0,0,0" HorizontalAlignment="Right"/>
                         <Grid.ContextMenu>
                             <ContextMenu Opened="ContextMenu_Opened" Closed="ContextMenu_Closed">
-                                <MenuItem Header="Open file location" Click="OpenLocation_Click"/>
-                                <MenuItem Header="Search on the web" Click="SearchWeb_Click"/>
+                                <MenuItem Header="{local:Loc Menu_OpenFile}" Click="OpenLocation_Click"/>
+                                <MenuItem Header="{local:Loc Menu_SearchWeb}" Click="SearchWeb_Click"/>
                             </ContextMenu>
                         </Grid.ContextMenu>
                     </Grid>

@@ -35,10 +35,10 @@ public partial class MainWindow : Window
         _minAgeDays = settings.MinAgeDays;
         _quarantineDays = settings.QuarantineDays;
         _excludedPaths = settings.ExcludedPaths;
-        CleanButton.Content = $"Clean > {_minAgeDays} days";
+        CleanButton.Content = L.T("Main_CleanOlderThan", _minAgeDays);
 
         var lowDrives = DiskAnalyzer.LowSpaceDrives(settings.LowSpaceThresholdPercent);
-        LowSpaceText.Text = $"Low disk space: {DiskAnalyzer.LowSpaceMessage(lowDrives)}. Warning threshold: {settings.LowSpaceThresholdPercent}%.";
+        LowSpaceText.Text = L.T("Main_LowSpace", L.LowSpace(lowDrives), settings.LowSpaceThresholdPercent);
         LowSpaceText.Visibility = lowDrives.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         var sources = RuleEngine.LoadRelevant(settings).Concat(AutoDiscoveryScanner.Discover());
@@ -73,7 +73,7 @@ public partial class MainWindow : Window
         var selectedFiles = GetSelectedFilePaths();
         if (selectedFiles.Count == 0)
         {
-            ShowInfo("No files selected.", "Clean");
+            ShowInfo(L.T("Common_NoFilesSelected"), L.T("Main_Clean"));
             return;
         }
 
@@ -81,9 +81,9 @@ public partial class MainWindow : Window
         if (classification.TotalCount == 0)
         {
             ShowInfo(
-                $"None of the {selectedFiles.Count} selected files can be cleaned right now.\n\n" +
+                L.T("Main_NoneCleanable", selectedFiles.Count) + "\n\n" +
                 BuildClassificationSummary(classification, forConfirm: false),
-                "Nothing to clean");
+                L.T("Main_NothingToClean"));
             return;
         }
 
@@ -97,7 +97,7 @@ public partial class MainWindow : Window
             var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays, _excludedPaths, minAgeOverrides: _minAgeOverrides);
             CleanupLog.Write("manual", result);
 
-            ShowInfo(BuildDeleteSummary(result, allFiles.Count), "Cleanup complete");
+            ShowInfo(BuildDeleteSummary(result, allFiles.Count), L.T("Main_CleanupComplete"));
             RunScan();
             return;
         }
@@ -107,11 +107,10 @@ public partial class MainWindow : Window
 
         var adminCount = classification.NeedsAdmin.Count;
         var helperNote = StartElevatedCleanup(classification.NeedsAdmin)
-            ? $"\n\n{adminCount} more files need administrator rights - finishing in the background. " +
-              "The Windows notification will report how many of them were moved to quarantine."
-            : $"\n\n{adminCount} files that need administrator rights were left in place (UAC prompt cancelled).";
+            ? "\n\n" + L.T("Main_AdminBackground", adminCount)
+            : "\n\n" + L.T("Main_AdminCancelled", adminCount);
 
-        ShowInfo(BuildDeleteSummary(partialResult, classification.DeletableNow.Count) + helperNote, "Cleanup complete");
+        ShowInfo(BuildDeleteSummary(partialResult, classification.DeletableNow.Count) + helperNote, L.T("Main_CleanupComplete"));
 
         // Give the elevated helper a moment before refreshing the tree
         ScheduleRescan();
@@ -125,18 +124,18 @@ public partial class MainWindow : Window
     {
         var lines = new List<string>
         {
-            $"Moved to quarantine: {result.DeletedCount} of {attemptedCount} files",
-            $"Size: {SizeFormatter.Format(result.FreedBytes)} (space is freed when quarantine expires in {_quarantineDays} days)"
+            L.T("Main_MovedOf", result.DeletedCount, attemptedCount),
+            L.T("Main_SizeFreedLater", SizeFormatter.Format(result.FreedBytes), _quarantineDays)
         };
 
         if (result.SkippedCount > 0)
         {
             lines.Add("");
-            lines.Add($"Left in place: {result.SkippedCount}");
+            lines.Add(L.T("Main_LeftInPlace", result.SkippedCount));
             AddSkipReasons(lines, result);
-            AddIfAny(lines, result.SkippedAccessDeniedCount, "access denied");
-            AddIfAny(lines, result.SkippedOtherErrorCount, "other errors");
-            lines.Add("Details: autoclean.log");
+            AddIfAny(lines, result.SkippedAccessDeniedCount, L.T("Skip_AccessDenied"));
+            AddIfAny(lines, result.SkippedOtherErrorCount, L.T("Skip_OtherErrors"));
+            lines.Add(L.T("Main_DetailsLog"));
         }
 
         return string.Join("\n", lines);
@@ -153,11 +152,11 @@ public partial class MainWindow : Window
     private bool ConfirmCleanup(ClassificationResult classification)
     {
         var confirm = MessageBox.Show(
-            $"{classification.TotalCount} files will be moved to quarantine, " +
-            $"{SizeFormatter.Format(classification.TotalBytes)}.\n\n" +
+            L.T("Main_ConfirmText", classification.TotalCount, SizeFormatter.Format(classification.TotalBytes), _quarantineDays) +
+            "\n\n" + ExpertWarning() +
             BuildClassificationSummary(classification, forConfirm: true) +
-            "\nProceed?",
-            "Confirm cleanup",
+            "\n" + L.T("Common_Proceed"),
+            L.T("Main_ConfirmTitle"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
@@ -203,8 +202,8 @@ public partial class MainWindow : Window
 
         if (forConfirm && NeedsElevatedHelper(classification))
         {
-            lines.Add($"- {classification.DeletableNow.Count} can be moved now ({SizeFormatter.Format(classification.DeletableNowBytes)})");
-            lines.Add($"- {classification.NeedsAdmin.Count} need administrator rights ({SizeFormatter.Format(classification.NeedsAdminBytes)}) - one UAC prompt");
+            lines.Add("- " + L.T("Main_MovableNow", classification.DeletableNow.Count, SizeFormatter.Format(classification.DeletableNowBytes)));
+            lines.Add("- " + L.T("Main_NeedAdmin", classification.NeedsAdmin.Count, SizeFormatter.Format(classification.NeedsAdminBytes)));
         }
 
         AddSkipReasons(lines, classification);
@@ -213,18 +212,19 @@ public partial class MainWindow : Window
 
     private void AddSkipReasons(List<string> lines, SkipStatistics stats)
     {
-        AddIfAny(lines, stats.SkippedTooRecentCount, $"too recent (used within {_minAgeDays} days)");
-        AddIfAny(lines, stats.SkippedProtectedCount, "protected file type");
-        AddIfAny(lines, stats.SkippedExcludedCount, "excluded by you");
-        AddIfAny(lines, stats.SkippedReparsePointCount, "reparse point / symlink");
-        AddIfAny(lines, stats.SkippedOutsideRootCount, "outside allowed folders");
-        AddIfAny(lines, stats.SkippedMissingCount, "already gone");
-        AddIfAny(lines, stats.SkippedInUseCount, "in use / locked by another process");
+        AddIfAny(lines, stats.SkippedTooRecentCount, L.T("Skip_TooRecent", _minAgeDays));
+        AddIfAny(lines, stats.SkippedProtectedCount, L.T("Skip_Protected"));
+        AddIfAny(lines, stats.SkippedExcludedCount, L.T("Skip_Excluded"));
+        AddIfAny(lines, stats.SkippedReparsePointCount, L.T("Skip_Reparse"));
+        AddIfAny(lines, stats.SkippedOutsideRootCount, L.T("Skip_OutsideRoot"));
+        AddIfAny(lines, stats.SkippedMissingCount, L.T("Skip_Missing"));
+        AddIfAny(lines, stats.SkippedInUseCount, L.T("Skip_InUse"));
     }
 
+    // "reason: count" reads naturally in every language, with no plural forms to get wrong
     private static void AddIfAny(List<string> lines, int count, string description)
     {
-        if (count > 0) lines.Add($"- {count} {description}");
+        if (count > 0) lines.Add($"- {description}: {count}");
     }
 
     private string ExpertWarning()
@@ -237,8 +237,7 @@ public partial class MainWindow : Window
 
         return expertNames.Count == 0
             ? ""
-            : "WARNING - expert-level sources are selected: " + string.Join(", ", expertNames) +
-              ".\nCleaning them can slow Windows down or change how it behaves.\n\n";
+            : L.T("Main_ExpertWarning", string.Join(", ", expertNames)) + "\n\n";
     }
 
     private void ToolsButton_Click(object sender, RoutedEventArgs e)
@@ -264,9 +263,23 @@ public partial class MainWindow : Window
 
     private void ScheduleButton_Click(object sender, RoutedEventArgs e)
     {
-        var window = new SettingsWindow { Owner = this };
-        window.ShowDialog();
-        RunScan();
+        var languageBefore = SettingsService.Load().Language;
+        new SettingsWindow { Owner = this }.ShowDialog();
+
+        var language = SettingsService.Load().Language;
+        if (language == languageBefore)
+        {
+            RunScan();
+            return;
+        }
+
+        // XAML text is resolved when a window is built, so a language change rebuilds the window.
+        // Nothing is lost: the scan it shows is re-run from the same saved settings.
+        L.Apply(language);
+        var replacement = new MainWindow { Left = Left, Top = Top, Width = Width, Height = Height };
+        System.Windows.Application.Current.MainWindow = replacement;
+        replacement.Show();
+        Close();
     }
 
     private void AddToExclusions_Click(object sender, RoutedEventArgs e)
@@ -282,7 +295,7 @@ public partial class MainWindow : Window
             SettingsService.Save(settings);
         }
 
-        ShowInfo($"Added to exclusions:\n{path}", "Exclusions");
+        ShowInfo(L.T("Main_ExclusionAdded", path), L.T("Main_ExclusionsTitle"));
         RunScan();
     }
 

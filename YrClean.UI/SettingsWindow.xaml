@@ -1,7 +1,8 @@
 <Window x:Class="YrClean.UI.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Schedule settings" Height="670" Width="400"
+        xmlns:local="clr-namespace:YrClean.UI"
+        Title="{local:Loc Settings_Title}" Height="740" Width="420"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Background="#1E1E1E"
         Foreground="#E1E1E1">
@@ -25,58 +26,67 @@
         </Style>
     </Window.Resources>
     <StackPanel Margin="16">
-        <CheckBox Name="ScheduleEnabledCheck" Content="Enable scheduled auto-clean" FontWeight="Bold"/>
+        <CheckBox Name="ScheduleEnabledCheck" Content="{local:Loc Settings_Enable}" FontWeight="Bold"/>
 
-        <TextBlock Text="Delete files older than" Foreground="#E1E1E1" Margin="0,16,0,4"/>
+        <TextBlock Text="{local:Loc Settings_OlderThan}" Foreground="#E1E1E1" Margin="0,16,0,4"/>
         <ComboBox Name="AgeThresholdCombo" SelectionChanged="AgeThresholdCombo_SelectionChanged">
-            <ComboBoxItem Content="1 day" Tag="1"/>
-            <ComboBoxItem Content="1 week" Tag="7"/>
-            <ComboBoxItem Content="2 weeks" Tag="14"/>
-            <ComboBoxItem Content="1 month" Tag="30"/>
-            <ComboBoxItem Content="3 months" Tag="90"/>
-            <ComboBoxItem Content="6 months" Tag="180"/>
-            <ComboBoxItem Content="1 year" Tag="365"/>
-            <ComboBoxItem Content="Custom..." Tag="custom"/>
+            <ComboBoxItem Content="{local:Loc Age_1Day}" Tag="1"/>
+            <ComboBoxItem Content="{local:Loc Age_1Week}" Tag="7"/>
+            <ComboBoxItem Content="{local:Loc Age_2Weeks}" Tag="14"/>
+            <ComboBoxItem Content="{local:Loc Age_1Month}" Tag="30"/>
+            <ComboBoxItem Content="{local:Loc Age_3Months}" Tag="90"/>
+            <ComboBoxItem Content="{local:Loc Age_6Months}" Tag="180"/>
+            <ComboBoxItem Content="{local:Loc Age_1Year}" Tag="365"/>
+            <ComboBoxItem Content="{local:Loc Age_Custom}" Tag="custom"/>
         </ComboBox>
 
-        <TextBlock Name="CustomDaysLabel" Text="Custom days" Foreground="#E1E1E1" Margin="0,12,0,4"/>
+        <TextBlock Name="CustomDaysLabel" Text="{local:Loc Settings_CustomDays}" Foreground="#E1E1E1" Margin="0,12,0,4"/>
         <TextBox Name="CustomDaysTextBox" Text="14"/>
 
-        <TextBlock Text="Frequency" Foreground="#E1E1E1" Margin="0,16,0,4"/>
+        <TextBlock Text="{local:Loc Settings_Frequency}" Foreground="#E1E1E1" Margin="0,16,0,4"/>
         <ComboBox Name="FrequencyCombo" SelectionChanged="FrequencyCombo_SelectionChanged">
-            <ComboBoxItem Content="Hourly"/>
-            <ComboBoxItem Content="Daily"/>
-            <ComboBoxItem Content="Weekly"/>
+            <ComboBoxItem Content="{local:Loc Freq_Hourly}"/>
+            <ComboBoxItem Content="{local:Loc Freq_Daily}"/>
+            <ComboBoxItem Content="{local:Loc Freq_Weekly}"/>
         </ComboBox>
 
-        <TextBlock Name="DayLabel" Text="Day of week" Foreground="#E1E1E1" Margin="0,12,0,4"/>
+        <TextBlock Name="DayLabel" Text="{local:Loc Settings_DayOfWeek}" Foreground="#E1E1E1" Margin="0,12,0,4"/>
         <ComboBox Name="DayCombo">
-            <ComboBoxItem Content="Monday"/>
-            <ComboBoxItem Content="Tuesday"/>
-            <ComboBoxItem Content="Wednesday"/>
-            <ComboBoxItem Content="Thursday"/>
-            <ComboBoxItem Content="Friday"/>
-            <ComboBoxItem Content="Saturday"/>
-            <ComboBoxItem Content="Sunday"/>
+            <ComboBoxItem Content="{local:Loc Day_Monday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Tuesday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Wednesday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Thursday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Friday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Saturday}"/>
+            <ComboBoxItem Content="{local:Loc Day_Sunday}"/>
         </ComboBox>
 
-        <CheckBox Name="NotifyCheck" Content="Show a notification after each run" Margin="0,16,0,0"/>
+        <CheckBox Name="NotifyCheck" Content="{local:Loc Settings_Notify}" Margin="0,16,0,0"/>
 
-        <CheckBox Name="MaintenanceCheck" Content="Monthly component store cleanup (DISM)" FontWeight="Bold" Margin="0,16,0,0"/>
-        <TextBlock Text="Day of month (1-28)" Foreground="#E1E1E1" Margin="0,8,0,4"/>
+        <CheckBox Name="MaintenanceCheck" Content="{local:Loc Settings_Maintenance}" FontWeight="Bold" Margin="0,16,0,0"/>
+        <TextBlock Text="{local:Loc Settings_DayOfMonth}" Foreground="#E1E1E1" Margin="0,8,0,4"/>
         <TextBox Name="MaintenanceDayTextBox" Text="1"/>
 
-        <TextBlock Text="Warn when free disk space is below (%)" Foreground="#E1E1E1" Margin="0,12,0,4"/>
+        <TextBlock Text="{local:Loc Settings_LowSpace}" Foreground="#E1E1E1" Margin="0,12,0,4"/>
         <TextBox Name="LowSpaceTextBox" Text="15"/>
 
         <CheckBox Name="UseWinapp2Check"
-                  Content="Use winapp2.ini rules from the rules folder (review level)"
+                  Content="{local:Loc Settings_Winapp2}"
                   Margin="0,10,0,0"/>
 
-        <TextBlock Text="Keep cleaned files in quarantine (days)" Foreground="#E1E1E1" Margin="0,16,0,4"/>
+        <TextBlock Text="{local:Loc Settings_QuarantineDays}" Foreground="#E1E1E1" Margin="0,16,0,4"/>
         <TextBox Name="QuarantineDaysTextBox" Text="7"/>
 
-        <Button Content="Save" Height="32" Margin="0,20,0,0" Click="SaveButton_Click"/>
+        <TextBlock Text="{local:Loc Settings_Language}" Foreground="#E1E1E1" Margin="0,16,0,4"/>
+        <ComboBox Name="LanguageCombo">
+            <ComboBoxItem Content="{local:Loc Lang_System}" Tag=""/>
+            <ComboBoxItem Content="English" Tag="en"/>
+            <ComboBoxItem Content="Українська" Tag="uk-UA"/>
+            <ComboBoxItem Content="Русский" Tag="ru-RU"/>
+            <ComboBoxItem Content="Polski" Tag="pl-PL"/>
+        </ComboBox>
+
+        <Button Content="{local:Loc Settings_Save}" Height="32" Margin="0,20,0,0" Click="SaveButton_Click"/>
         <TextBlock Name="StatusText" Foreground="#E1E1E1" Margin="0,10,0,0" TextWrapping="Wrap"/>
     </StackPanel>
 </Window>

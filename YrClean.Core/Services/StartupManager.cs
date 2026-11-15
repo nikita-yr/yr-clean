@@ -48,8 +48,8 @@ public static class StartupManager
         AddRunKey(items, RegistryHive.LocalMachine, RegistryView.Registry64, "Run", @"HKLM\...\Run");
         AddRunKey(items, RegistryHive.LocalMachine, RegistryView.Registry32, "Run32", @"HKLM\...\Run (32-bit)");
 
-        AddStartupFolder(items, Environment.SpecialFolder.Startup, RegistryHive.CurrentUser, "Startup folder (user)");
-        AddStartupFolder(items, Environment.SpecialFolder.CommonStartup, RegistryHive.LocalMachine, "Startup folder (all users)");
+        AddStartupFolder(items, Environment.SpecialFolder.Startup, RegistryHive.CurrentUser);
+        AddStartupFolder(items, Environment.SpecialFolder.CommonStartup, RegistryHive.LocalMachine);
 
         AddScheduledTasks(items);
         return items.OrderBy(i => i.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
@@ -146,7 +146,7 @@ public static class StartupManager
         }
     }
 
-    private static void AddStartupFolder(List<StartupItem> items, Environment.SpecialFolder folder, RegistryHive hive, string location)
+    private static void AddStartupFolder(List<StartupItem> items, Environment.SpecialFolder folder, RegistryHive hive)
     {
         try
         {
@@ -166,7 +166,7 @@ public static class StartupManager
                 var target = Path.GetExtension(file).Equals(".lnk", StringComparison.OrdinalIgnoreCase)
                     ? ShortcutTarget(file)
                     : file;
-                items.Add(Describe(Path.GetFileNameWithoutExtension(file), target ?? file, location, StartupKind.StartupFolder,
+                items.Add(Describe(Path.GetFileNameWithoutExtension(file), target ?? file, path, StartupKind.StartupFolder,
                     IsApproved(approved?.GetValue(fileName) as byte[]), target, hive, "StartupFolder", fileName));
             }
         }
@@ -193,7 +193,7 @@ public static class StartupManager
             {
                 if (ParseTask(File.ReadAllText(file)) is { } task)
                 {
-                    items.Add(Describe(Path.GetFileName(file), task.Command, "Task Scheduler: " + taskName,
+                    items.Add(Describe(Path.GetFileName(file), task.Command, taskName,
                         StartupKind.ScheduledTask, task.Enabled, ExecutableFromCommand(task.Command),
                         default, "", taskName));
                 }

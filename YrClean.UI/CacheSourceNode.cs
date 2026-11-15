@@ -22,12 +22,12 @@ public class CacheSourceNode : FolderNodeBase
     private static string Suffix(SourceScan scan)
     {
         if (scan.Busy)
-            return "  · busy - close the program to clean it";
+            return "  · " + L.T("Node_Busy");
 
         return scan.Source.Level switch
         {
-            RuleLevel.Review => "  · review",
-            RuleLevel.Expert => "  · expert",
+            RuleLevel.Review => "  · " + L.T("Node_Review"),
+            RuleLevel.Expert => "  · " + L.T("Node_Expert"),
             _ => ""
         };
     }

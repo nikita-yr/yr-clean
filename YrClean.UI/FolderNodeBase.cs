@@ -10,7 +10,7 @@ public abstract class FolderNodeBase : SelectableNodeBase
     {
         FullFolderPath = fullFolderPath;
         TotalSizeBytes = totalSizeBytes;
-        CountDisplay = $"{fileCount} files";
+        CountDisplay = L.T("Node_FileCount", fileCount);
     }
 
     public string FullFolderPath { get; }

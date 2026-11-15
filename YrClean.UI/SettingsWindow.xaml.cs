@@ -35,6 +35,8 @@ public partial class SettingsWindow : Window
         UseWinapp2Check.IsChecked = _settings.UseWinapp2;
         LowSpaceTextBox.Text = _settings.LowSpaceThresholdPercent.ToString();
         MaintenanceCheck.IsChecked = _settings.MaintenanceEnabled;
+        LanguageCombo.SelectedIndex = Math.Max(0, Array.FindIndex(
+            LanguageCombo.Items.Cast<ComboBoxItem>().ToArray(), item => (string)item.Tag == _settings.Language));
         MaintenanceDayTextBox.Text = _settings.MaintenanceDayOfMonth.ToString();
         SelectAgeThreshold(_settings.MinAgeDays);
 
@@ -100,30 +102,31 @@ public partial class SettingsWindow : Window
     {
         if (!TryReadMinAgeDays(out var minAgeDays))
         {
-            ShowMessage("Custom days must be a positive whole number.", MessageBoxImage.Error);
+            ShowMessage(L.T("Err_CustomDays"), MessageBoxImage.Error);
             return;
         }
 
         if (!int.TryParse(QuarantineDaysTextBox.Text, out var quarantineDays) || quarantineDays < 1)
         {
-            ShowMessage("Quarantine days must be a positive whole number.", MessageBoxImage.Error);
+            ShowMessage(L.T("Err_QuarantineDays"), MessageBoxImage.Error);
             return;
         }
 
         if (!int.TryParse(LowSpaceTextBox.Text, out var lowSpacePercent) || lowSpacePercent < 0 || lowSpacePercent > 99)
         {
-            ShowMessage("The free space threshold must be a whole number from 0 to 99.", MessageBoxImage.Error);
+            ShowMessage(L.T("Err_LowSpace"), MessageBoxImage.Error);
             return;
         }
 
         if (!int.TryParse(MaintenanceDayTextBox.Text, out var maintenanceDay) || maintenanceDay < 1 || maintenanceDay > 28)
         {
-            ShowMessage("The day of month must be a whole number from 1 to 28.", MessageBoxImage.Error);
+            ShowMessage(L.T("Err_DayOfMonth"), MessageBoxImage.Error);
             return;
         }
 
         _settings.MinAgeDays = minAgeDays;
         _settings.MaintenanceEnabled = MaintenanceCheck.IsChecked == true;
+        _settings.Language = (string)((ComboBoxItem)LanguageCombo.SelectedItem).Tag;
         _settings.MaintenanceDayOfMonth = maintenanceDay;
         _settings.LowSpaceThresholdPercent = lowSpacePercent;
         _settings.ScheduleEnabled = ScheduleEnabledCheck.IsChecked == true;
@@ -139,13 +142,13 @@ public partial class SettingsWindow : Window
         var vbsPath = Path.Combine(AppContext.BaseDirectory, "invisible.vbs");
         if (!TaskSchedulerService.Register(_settings, exePath, vbsPath))
         {
-            ShowMessage("Failed to update the scheduled tasks.", MessageBoxImage.Error);
+            ShowMessage(L.T("Err_TaskFailed"), MessageBoxImage.Error);
             return; // keep the window open so the user can retry
         }
 
         var summary = _settings.ScheduleEnabled
-            ? "Settings saved and the scheduled tasks were updated."
-            : "Settings saved. Scheduled auto-clean is now disabled.";
+            ? L.T("Settings_Saved")
+            : L.T("Settings_SavedNoSchedule");
 
         ShowMessage(summary, MessageBoxImage.Information);
         Close();

@@ -111,9 +111,6 @@ public static class DiskAnalyzer
     public static List<DriveSpace> LowSpaceDrives(int thresholdPercent) =>
         SystemHealth.GetDriveSpace().Where(d => d.FreePercent < thresholdPercent).ToList();
 
-    public static string LowSpaceMessage(IEnumerable<DriveSpace> drives) => string.Join("; ", drives.Select(d =>
-        $"{d.Name} has {SizeFormatter.Format(d.FreeBytes)} free ({d.FreePercent:F0}%)"));
-
     // Enumeration can still fail on the starting folder itself, or mid-way on an odd volume
     private static IEnumerable<T> SafeEnumerate<T>(Func<IEnumerable<T>> source)
     {

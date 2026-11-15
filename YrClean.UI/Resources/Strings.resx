@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_Cancelled" xml:space="preserve"><value>Cancelled.</value></data>
+  <data name="Common_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Common_Failed" xml:space="preserve"><value>Failed: {0}</value></data>
+  <data name="Common_NoFilesSelected" xml:space="preserve"><value>No files selected.</value></data>
+  <data name="Common_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Common_Proceed" xml:space="preserve"><value>Proceed?</value></data>
+  <data name="Common_Scanning" xml:space="preserve"><value>Scanning...</value></data>
+  <data name="Age_1Day" xml:space="preserve"><value>1 day</value></data>
+  <data name="Age_1Week" xml:space="preserve"><value>1 week</value></data>
+  <data name="Age_2Weeks" xml:space="preserve"><value>2 weeks</value></data>
+  <data name="Age_1Month" xml:space="preserve"><value>1 month</value></data>
+  <data name="Age_3Months" xml:space="preserve"><value>3 months</value></data>
+  <data name="Age_6Months" xml:space="preserve"><value>6 months</value></data>
+  <data name="Age_1Year" xml:space="preserve"><value>1 year</value></data>
+  <data name="Age_Custom" xml:space="preserve"><value>Custom...</value></data>
+  <data name="Day_Monday" xml:space="preserve"><value>Monday</value></data>
+  <data name="Day_Tuesday" xml:space="preserve"><value>Tuesday</value></data>
+  <data name="Day_Wednesday" xml:space="preserve"><value>Wednesday</value></data>
+  <data name="Day_Thursday" xml:space="preserve"><value>Thursday</value></data>
+  <data name="Day_Friday" xml:space="preserve"><value>Friday</value></data>
+  <data name="Day_Saturday" xml:space="preserve"><value>Saturday</value></data>
+  <data name="Day_Sunday" xml:space="preserve"><value>Sunday</value></data>
+  <data name="Freq_Hourly" xml:space="preserve"><value>Hourly</value></data>
+  <data name="Freq_Daily" xml:space="preserve"><value>Daily</value></data>
+  <data name="Freq_Weekly" xml:space="preserve"><value>Weekly</value></data>
+  <data name="Lang_System" xml:space="preserve"><value>Same as Windows</value></data>
+  <data name="Drive_Line" xml:space="preserve"><value>{0}  {1} free of {2} ({3}%)</value></data>
+  <data name="Drive_Low" xml:space="preserve"><value>LOW DISK SPACE (below {0}%)</value></data>
+  <data name="LowSpace_Drive" xml:space="preserve"><value>{0} has {1} free ({2}%)</value></data>
+  <data name="Health_Healthy" xml:space="preserve"><value>healthy</value></data>
+  <data name="Health_Warning" xml:space="preserve"><value>warning</value></data>
+  <data name="Health_Unhealthy" xml:space="preserve"><value>failing</value></data>
+  <data name="Health_Unknown" xml:space="preserve"><value>unknown</value></data>
+  <data name="Main_SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="Main_Clean" xml:space="preserve"><value>Clean</value></data>
+  <data name="Main_CleanOlderThan" xml:space="preserve"><value>Clean &gt; {0} days</value></data>
+  <data name="Main_Quarantine" xml:space="preserve"><value>Quarantine</value></data>
+  <data name="Main_QuarantineTip" xml:space="preserve"><value>Review and restore cleaned files</value></data>
+  <data name="Main_System" xml:space="preserve"><value>System</value></data>
+  <data name="Main_SystemTip" xml:space="preserve"><value>Windows cleanup and repair tools</value></data>
+  <data name="Main_Startup" xml:space="preserve"><value>Startup</value></data>
+  <data name="Main_StartupTip" xml:space="preserve"><value>Programs that start with Windows</value></data>
+  <data name="Main_Disk" xml:space="preserve"><value>Disk</value></data>
+  <data name="Main_DiskTip" xml:space="preserve"><value>Largest folders and files, old files, duplicates</value></data>
+  <data name="Main_Leftovers" xml:space="preserve"><value>Leftovers</value></data>
+  <data name="Main_LeftoversTip" xml:space="preserve"><value>Folders, services, tasks and shortcuts left by removed programs</value></data>
+  <data name="Main_LowSpace" xml:space="preserve"><value>Low disk space: {0}. Warning threshold: {1}%.</value></data>
+  <data name="Main_NothingToClean" xml:space="preserve"><value>Nothing to clean</value></data>
+  <data name="Main_NoneCleanable" xml:space="preserve"><value>None of the selected files ({0}) can be cleaned right now.</value></data>
+  <data name="Main_CleanupComplete" xml:space="preserve"><value>Cleanup complete</value></data>
+  <data name="Main_ConfirmTitle" xml:space="preserve"><value>Confirm cleanup</value></data>
+  <data name="Main_ConfirmText" xml:space="preserve"><value>Files to move to quarantine: {0}, {1} in total. They can be restored for {2} days.</value></data>
+  <data name="Main_AdminBackground" xml:space="preserve"><value>Files that need administrator rights: {0}. They are being finished in the background; a Windows notification will report the result.</value></data>
+  <data name="Main_AdminCancelled" xml:space="preserve"><value>Files that need administrator rights: {0}. They were left in place because the User Account Control prompt was cancelled.</value></data>
+  <data name="Main_MovedOf" xml:space="preserve"><value>Moved to quarantine: {0} of {1}</value></data>
+  <data name="Main_SizeFreedLater" xml:space="preserve"><value>Size: {0} (the space is freed when quarantine expires, in {1} days)</value></data>
+  <data name="Main_LeftInPlace" xml:space="preserve"><value>Left in place: {0}</value></data>
+  <data name="Main_DetailsLog" xml:space="preserve"><value>Details: autoclean.log</value></data>
+  <data name="Main_MovableNow" xml:space="preserve"><value>can be moved now: {0} ({1})</value></data>
+  <data name="Main_NeedAdmin" xml:space="preserve"><value>need administrator rights: {0} ({1}) - one User Account Control prompt</value></data>
+  <data name="Main_ExpertWarning" xml:space="preserve"><value>WARNING: expert-level sources are selected: {0}.\nCleaning them can slow Windows down or change how it behaves.</value></data>
+  <data name="Main_ExclusionAdded" xml:space="preserve"><value>Added to exclusions:\n{0}</value></data>
+  <data name="Main_ExclusionsTitle" xml:space="preserve"><value>Exclusions</value></data>
+  <data name="Menu_OpenFolder" xml:space="preserve"><value>Open folder location</value></data>
+  <data name="Menu_OpenFile" xml:space="preserve"><value>Open file location</value></data>
+  <data name="Menu_SearchWeb" xml:space="preserve"><value>Search on the web</value></data>
+  <data name="Menu_AddExclusion" xml:space="preserve"><value>Add to exclusions</value></data>
+  <data name="Node_FileCount" xml:space="preserve"><value>files: {0}</value></data>
+  <data name="Node_Review" xml:space="preserve"><value>review</value></data>
+  <data name="Node_Expert" xml:space="preserve"><value>expert</value></data>
+  <data name="Node_Busy" xml:space="preserve"><value>busy - close the program to clean it</value></data>
+  <data name="Skip_TooRecent" xml:space="preserve"><value>too recent (used within {0} days)</value></data>
+  <data name="Skip_Protected" xml:space="preserve"><value>protected file type</value></data>
+  <data name="Skip_Excluded" xml:space="preserve"><value>excluded by you</value></data>
+  <data name="Skip_Reparse" xml:space="preserve"><value>reparse point / symbolic link</value></data>
+  <data name="Skip_OutsideRoot" xml:space="preserve"><value>outside allowed folders</value></data>
+  <data name="Skip_Missing" xml:space="preserve"><value>already gone</value></data>
+  <data name="Skip_InUse" xml:space="preserve"><value>in use by another process</value></data>
+  <data name="Skip_AccessDenied" xml:space="preserve"><value>access denied</value></data>
+  <data name="Skip_OtherErrors" xml:space="preserve"><value>other errors</value></data>
+  <data name="Notify_ElevatedMoved" xml:space="preserve"><value>Moved {0} of {1} administrator-protected files to quarantine, {2}.</value></data>
+  <data name="Notify_ElevatedLeft" xml:space="preserve"><value>Left in place: {0} (details in autoclean.log).</value></data>
+  <data name="Notify_LowSpace" xml:space="preserve"><value>Low disk space: {0}</value></data>
+  <data name="Notify_AutoClean" xml:space="preserve"><value>Files moved to quarantine: {0}, {1}.</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Enable" xml:space="preserve"><value>Enable scheduled auto-clean</value></data>
+  <data name="Settings_OlderThan" xml:space="preserve"><value>Clean files older than</value></data>
+  <data name="Settings_CustomDays" xml:space="preserve"><value>Custom days</value></data>
+  <data name="Settings_Frequency" xml:space="preserve"><value>Frequency</value></data>
+  <data name="Settings_DayOfWeek" xml:space="preserve"><value>Day of week</value></data>
+  <data name="Settings_Notify" xml:space="preserve"><value>Show a notification after each run</value></data>
+  <data name="Settings_Maintenance" xml:space="preserve"><value>Monthly component store cleanup (DISM)</value></data>
+  <data name="Settings_DayOfMonth" xml:space="preserve"><value>Day of month (1-28)</value></data>
+  <data name="Settings_LowSpace" xml:space="preserve"><value>Warn when free disk space is below (%)</value></data>
+  <data name="Settings_Winapp2" xml:space="preserve"><value>Use winapp2.ini rules from the rules folder (review level)</value></data>
+  <data name="Settings_QuarantineDays" xml:space="preserve"><value>Keep cleaned files in quarantine (days)</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Settings_Saved" xml:space="preserve"><value>Settings saved and the scheduled tasks were updated.</value></data>
+  <data name="Settings_SavedNoSchedule" xml:space="preserve"><value>Settings saved. Scheduled auto-clean is turned off.</value></data>
+  <data name="Err_CustomDays" xml:space="preserve"><value>Custom days must be a positive whole number.</value></data>
+  <data name="Err_QuarantineDays" xml:space="preserve"><value>Quarantine days must be a positive whole number.</value></data>
+  <data name="Err_LowSpace" xml:space="preserve"><value>The free space threshold must be a whole number from 0 to 99.</value></data>
+  <data name="Err_DayOfMonth" xml:space="preserve"><value>The day of month must be a whole number from 1 to 28.</value></data>
+  <data name="Err_TaskFailed" xml:space="preserve"><value>Could not update the scheduled tasks.</value></data>
+  <data name="Quar_Title" xml:space="preserve"><value>Quarantine and history</value></data>
+  <data name="Quar_Restore" xml:space="preserve"><value>Restore selected</value></data>
+  <data name="Quar_Summary" xml:space="preserve"><value>In quarantine: {0} files, {1}. Files are deleted permanently {2} days after they were cleaned.</value></data>
+  <data name="Quar_Restored" xml:space="preserve"><value>Files restored: {0}.</value></data>
+  <data name="Quar_NotRestored" xml:space="preserve"><value>Not restored: {0}</value></data>
+  <data name="Quar_Operation" xml:space="preserve"><value>{0}  {1}  -  files: {2}</value></data>
+  <data name="Quar_Restorable" xml:space="preserve"><value>{0} can be restored</value></data>
+  <data name="Start_Title" xml:space="preserve"><value>Startup programs</value></data>
+  <data name="Start_Tip" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="Start_Summary" xml:space="preserve"><value>Entries that start with Windows: {0} of {1}. Untick an entry to disable it - it stays in place and can be switched back on at any time.</value></data>
+  <data name="Start_Failed" xml:space="preserve"><value>Could not change "{0}".</value></data>
+  <data name="Start_Missing" xml:space="preserve"><value>executable not found</value></data>
+  <data name="Start_UnknownPublisher" xml:space="preserve"><value>unknown publisher</value></data>
+  <data name="Start_KindRegistry" xml:space="preserve"><value>Registry</value></data>
+  <data name="Start_KindFolder" xml:space="preserve"><value>Startup folder</value></data>
+  <data name="Start_KindTask" xml:space="preserve"><value>Task Scheduler</value></data>
+  <data name="Disk_Title" xml:space="preserve"><value>Disk space</value></data>
+  <data name="Disk_Folder" xml:space="preserve"><value>Folder:</value></data>
+  <data name="Disk_Browse" xml:space="preserve"><value>Browse...</value></data>
+  <data name="Disk_Largest" xml:space="preserve"><value>Largest folders and files</value></data>
+  <data name="Disk_Old" xml:space="preserve"><value>Old files (90+ days)</value></data>
+  <data name="Disk_Duplicates" xml:space="preserve"><value>Duplicates</value></data>
+  <data name="Disk_ViewOnly" xml:space="preserve"><value>View only - nothing here is deleted automatically.</value></data>
+  <data name="Disk_LargestFolders" xml:space="preserve"><value>Largest folders in {0}</value></data>
+  <data name="Disk_LargestFiles" xml:space="preserve"><value>Largest files</value></data>
+  <data name="Disk_OldSummary" xml:space="preserve"><value>Files not modified for {0}+ days: {1}, {2} in total</value></data>
+  <data name="Disk_DuplicatesSummary" xml:space="preserve"><value>Groups of identical files (1 MB and larger): {0}, {1} taken by extra copies</value></data>
+  <data name="Disk_DuplicateGroup" xml:space="preserve"><value>Copies: {0}, {1} each</value></data>
+  <data name="Disk_NoFolder" xml:space="preserve"><value>That folder does not exist.</value></data>
+  <data name="Disk_Modified" xml:space="preserve"><value>modified {0}</value></data>
+  <data name="Left_Title" xml:space="preserve"><value>Program leftovers</value></data>
+  <data name="Left_Move" xml:space="preserve"><value>Move selected folders to quarantine</value></data>
+  <data name="Left_Folders" xml:space="preserve"><value>Folders no installed program seems to own</value></data>
+  <data name="Left_Services" xml:space="preserve"><value>Services whose program is missing (review only)</value></data>
+  <data name="Left_Tasks" xml:space="preserve"><value>Scheduled tasks whose program is missing (review only)</value></data>
+  <data name="Left_Shortcuts" xml:space="preserve"><value>Shortcuts whose target is missing (review only)</value></data>
+  <data name="Left_None" xml:space="preserve"><value>No leftovers found.</value></data>
+  <data name="Left_Hint" xml:space="preserve"><value>These are candidates, not verdicts - check each one before acting. Nothing is selected or removed automatically.</value></data>
+  <data name="Left_NoneSelected" xml:space="preserve"><value>No folders selected.</value></data>
+  <data name="Left_Confirm" xml:space="preserve"><value>Move the files of the selected folders ({0}, {1}) to quarantine?</value></data>
+  <data name="Left_ConfirmNote" xml:space="preserve"><value>They can be restored for {0} days. Programs, scripts and files used in the last {1} days are left in place.</value></data>
+  <data name="Left_Result" xml:space="preserve"><value>Files moved to quarantine: {0}.\nLeft in place: {1}.</value></data>
+  <data name="Left_FolderDetail" xml:space="preserve"><value>no installed program matches, untouched for {0}+ days</value></data>
+  <data name="Left_MissingDetail" xml:space="preserve"><value>missing: {0}</value></data>
+  <data name="Tools_Title" xml:space="preserve"><value>System tools</value></data>
+  <data name="Tools_Ready" xml:space="preserve"><value>Ready.</value></data>
+  <data name="Tools_Check" xml:space="preserve"><value>Check system (DISM + SFC)</value></data>
+  <data name="Tools_CheckTip" xml:space="preserve"><value>Repairs the Windows component store, then verifies system files. Can take 15-40 minutes.</value></data>
+  <data name="Tools_CheckExplain" xml:space="preserve"><value>This runs DISM /RestoreHealth and then sfc /scannow. It can take 15-40 minutes and needs an internet connection.</value></data>
+  <data name="Tools_Component" xml:space="preserve"><value>Clean up component store</value></data>
+  <data name="Tools_ComponentTip" xml:space="preserve"><value>DISM /Online /Cleanup-Image /StartComponentCleanup - removes superseded Windows components.</value></data>
+  <data name="Tools_ComponentExplain" xml:space="preserve"><value>DISM will remove superseded Windows components. Updates installed so far can no longer be uninstalled afterwards.</value></data>
+  <data name="Tools_UpdateCache" xml:space="preserve"><value>Clear Windows Update cache</value></data>
+  <data name="Tools_UpdateCacheTip" xml:space="preserve"><value>Stops the Windows Update service, moves old downloaded update files to quarantine, starts the service again.</value></data>
+  <data name="Tools_UpdateCacheExplain" xml:space="preserve"><value>The Windows Update service is stopped briefly while old downloaded update files are moved to quarantine.</value></data>
+  <data name="Tools_UpdateCacheResult" xml:space="preserve"><value>Files moved to quarantine: {0}, {1}.\nLeft in place: {2} (too recent, protected or in use).</value></data>
+  <data name="Tools_RecycleBin" xml:space="preserve"><value>Empty Recycle Bin</value></data>
+  <data name="Tools_RecycleBinSize" xml:space="preserve"><value>Empty Recycle Bin ({0})</value></data>
+  <data name="Tools_RecycleBinExplain" xml:space="preserve"><value>Everything in the Recycle Bin on all drives is deleted permanently. This cannot be undone.</value></data>
+  <data name="Tools_RecycleBinDone" xml:space="preserve"><value>The Recycle Bin is empty.</value></data>
+  <data name="Tools_RecycleBinFailed" xml:space="preserve"><value>Windows could not empty the Recycle Bin.</value></data>
+  <data name="Tools_WindowsOld" xml:space="preserve"><value>Remove Windows.old (expert)</value></data>
+  <data name="Tools_WindowsOldTip" xml:space="preserve"><value>Deletes the previous Windows installation. You will no longer be able to go back to it.</value></data>
+  <data name="Tools_WindowsOldExplain" xml:space="preserve"><value>{0} holds your previous Windows installation. After removing it you can no longer go back to that version, and it cannot be restored from quarantine.</value></data>
+  <data name="Tools_WindowsOldRemoved" xml:space="preserve"><value>Windows.old was removed.</value></data>
+  <data name="Tools_WindowsOldStill" xml:space="preserve"><value>Windows.old is still present.</value></data>
+  <data name="Tools_RestorePoint" xml:space="preserve"><value>Create restore point</value></data>
+  <data name="Tools_RestorePointExplain" xml:space="preserve"><value>Creates a System Restore point. Windows allows one per 24 hours and skips the request otherwise.</value></data>
+  <data name="Tools_RestorePointDone" xml:space="preserve"><value>Restore point requested.</value></data>
+  <data name="Tools_RestorePointFailed" xml:space="preserve"><value>Windows refused to create a restore point. System Restore may be turned off for the system drive.</value></data>
+  <data name="Tools_RestorePointFirst" xml:space="preserve"><value>A restore point is created first.</value></data>
+  <data name="Tools_RestorePointContinue" xml:space="preserve"><value>A restore point could not be created (System Restore may be turned off).\n\nContinue without one?</value></data>
+  <data name="Tools_StillRunning" xml:space="preserve"><value>An operation is still running. Cancel it first.</value></data>
+  <data name="Tools_ToolCompleted" xml:space="preserve"><value>{0}: completed</value></data>
+  <data name="Tools_ToolProblem" xml:space="preserve"><value>{0}: reported a problem (exit code {1})</value></data>
+  <data name="Tools_HealthChecking" xml:space="preserve"><value>Disk health: checking...</value></data>
+  <data name="Tools_HealthUnavailable" xml:space="preserve"><value>Disk health: not available on this system</value></data>
+  <data name="Tools_Health" xml:space="preserve"><value>Disk health: {0}</value></data>
+  <data name="Tools_HealthWarning" xml:space="preserve"><value>WARNING: a disk reports problems. Back up your data now.</value></data>
+  <data name="Tools_StartupCount" xml:space="preserve"><value>Startup programs enabled: {0}</value></data>
+</root>

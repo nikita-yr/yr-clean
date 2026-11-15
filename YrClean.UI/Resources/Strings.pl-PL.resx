@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Cancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="Common_Cancelled" xml:space="preserve"><value>Anulowano.</value></data>
+  <data name="Common_Close" xml:space="preserve"><value>Zamknij</value></data>
+  <data name="Common_Failed" xml:space="preserve"><value>Błąd: {0}</value></data>
+  <data name="Common_NoFilesSelected" xml:space="preserve"><value>Nie wybrano żadnych plików.</value></data>
+  <data name="Common_Open" xml:space="preserve"><value>Otwórz</value></data>
+  <data name="Common_Proceed" xml:space="preserve"><value>Kontynuować?</value></data>
+  <data name="Common_Scanning" xml:space="preserve"><value>Trwa wyszukiwanie...</value></data>
+  <data name="Age_1Day" xml:space="preserve"><value>1 dzień</value></data>
+  <data name="Age_1Week" xml:space="preserve"><value>1 tydzień</value></data>
+  <data name="Age_2Weeks" xml:space="preserve"><value>2 tygodnie</value></data>
+  <data name="Age_1Month" xml:space="preserve"><value>1 miesiąc</value></data>
+  <data name="Age_3Months" xml:space="preserve"><value>3 miesiące</value></data>
+  <data name="Age_6Months" xml:space="preserve"><value>6 miesięcy</value></data>
+  <data name="Age_1Year" xml:space="preserve"><value>1 rok</value></data>
+  <data name="Age_Custom" xml:space="preserve"><value>Inna wartość...</value></data>
+  <data name="Day_Monday" xml:space="preserve"><value>Poniedziałek</value></data>
+  <data name="Day_Tuesday" xml:space="preserve"><value>Wtorek</value></data>
+  <data name="Day_Wednesday" xml:space="preserve"><value>Środa</value></data>
+  <data name="Day_Thursday" xml:space="preserve"><value>Czwartek</value></data>
+  <data name="Day_Friday" xml:space="preserve"><value>Piątek</value></data>
+  <data name="Day_Saturday" xml:space="preserve"><value>Sobota</value></data>
+  <data name="Day_Sunday" xml:space="preserve"><value>Niedziela</value></data>
+  <data name="Freq_Hourly" xml:space="preserve"><value>Co godzinę</value></data>
+  <data name="Freq_Daily" xml:space="preserve"><value>Codziennie</value></data>
+  <data name="Freq_Weekly" xml:space="preserve"><value>Co tydzień</value></data>
+  <data name="Lang_System" xml:space="preserve"><value>Jak w systemie Windows</value></data>
+  <data name="Drive_Line" xml:space="preserve"><value>{0}  wolne {1} z {2} ({3}%)</value></data>
+  <data name="Drive_Low" xml:space="preserve"><value>MAŁO MIEJSCA (poniżej {0}%)</value></data>
+  <data name="LowSpace_Drive" xml:space="preserve"><value>na {0} zostało {1} wolnego miejsca ({2}%)</value></data>
+  <data name="Health_Healthy" xml:space="preserve"><value>sprawny</value></data>
+  <data name="Health_Warning" xml:space="preserve"><value>ostrzeżenie</value></data>
+  <data name="Health_Unhealthy" xml:space="preserve"><value>niesprawny</value></data>
+  <data name="Health_Unknown" xml:space="preserve"><value>nieznany</value></data>
+  <data name="Main_SelectAll" xml:space="preserve"><value>Zaznacz wszystko</value></data>
+  <data name="Main_Clean" xml:space="preserve"><value>Wyczyść</value></data>
+  <data name="Main_CleanOlderThan" xml:space="preserve"><value>Wyczyść &gt; {0} dni</value></data>
+  <data name="Main_Quarantine" xml:space="preserve"><value>Kwarantanna</value></data>
+  <data name="Main_QuarantineTip" xml:space="preserve"><value>Przeglądanie i przywracanie wyczyszczonych plików</value></data>
+  <data name="Main_System" xml:space="preserve"><value>System</value></data>
+  <data name="Main_SystemTip" xml:space="preserve"><value>Narzędzia do czyszczenia i naprawy systemu Windows</value></data>
+  <data name="Main_Startup" xml:space="preserve"><value>Autostart</value></data>
+  <data name="Main_StartupTip" xml:space="preserve"><value>Programy uruchamiane razem z systemem Windows</value></data>
+  <data name="Main_Disk" xml:space="preserve"><value>Dysk</value></data>
+  <data name="Main_DiskTip" xml:space="preserve"><value>Największe foldery i pliki, stare pliki, duplikaty</value></data>
+  <data name="Main_Leftovers" xml:space="preserve"><value>Pozostałości</value></data>
+  <data name="Main_LeftoversTip" xml:space="preserve"><value>Foldery, usługi, zadania i skróty pozostałe po odinstalowanych programach</value></data>
+  <data name="Main_LowSpace" xml:space="preserve"><value>Mało miejsca na dysku: {0}. Próg ostrzeżenia: {1}%.</value></data>
+  <data name="Main_NothingToClean" xml:space="preserve"><value>Nie ma czego czyścić</value></data>
+  <data name="Main_NoneCleanable" xml:space="preserve"><value>Żadnego z wybranych plików ({0}) nie można teraz wyczyścić.</value></data>
+  <data name="Main_CleanupComplete" xml:space="preserve"><value>Czyszczenie zakończone</value></data>
+  <data name="Main_ConfirmTitle" xml:space="preserve"><value>Potwierdzenie czyszczenia</value></data>
+  <data name="Main_ConfirmText" xml:space="preserve"><value>Pliki do przeniesienia do kwarantanny: {0}, łączny rozmiar {1}. Można je przywrócić przez {2} dni.</value></data>
+  <data name="Main_AdminBackground" xml:space="preserve"><value>Pliki wymagające uprawnień administratora: {0}. Są przetwarzane w tle; o wyniku poinformuje powiadomienie systemu Windows.</value></data>
+  <data name="Main_AdminCancelled" xml:space="preserve"><value>Pliki wymagające uprawnień administratora: {0}. Pozostały na miejscu, ponieważ monit Kontroli konta użytkownika został odrzucony.</value></data>
+  <data name="Main_MovedOf" xml:space="preserve"><value>Przeniesiono do kwarantanny: {0} z {1}</value></data>
+  <data name="Main_SizeFreedLater" xml:space="preserve"><value>Rozmiar: {0} (miejsce zwolni się po upływie kwarantanny, za {1} dni)</value></data>
+  <data name="Main_LeftInPlace" xml:space="preserve"><value>Pozostawiono na miejscu: {0}</value></data>
+  <data name="Main_DetailsLog" xml:space="preserve"><value>Szczegóły: autoclean.log</value></data>
+  <data name="Main_MovableNow" xml:space="preserve"><value>można przenieść teraz: {0} ({1})</value></data>
+  <data name="Main_NeedAdmin" xml:space="preserve"><value>wymagają uprawnień administratora: {0} ({1}) - jeden monit Kontroli konta użytkownika</value></data>
+  <data name="Main_ExpertWarning" xml:space="preserve"><value>UWAGA: wybrano źródła z poziomu eksperckiego: {0}.\nIch wyczyszczenie może spowolnić system Windows lub zmienić jego działanie.</value></data>
+  <data name="Main_ExclusionAdded" xml:space="preserve"><value>Dodano do wykluczeń:\n{0}</value></data>
+  <data name="Main_ExclusionsTitle" xml:space="preserve"><value>Wykluczenia</value></data>
+  <data name="Menu_OpenFolder" xml:space="preserve"><value>Otwórz lokalizację folderu</value></data>
+  <data name="Menu_OpenFile" xml:space="preserve"><value>Otwórz lokalizację pliku</value></data>
+  <data name="Menu_SearchWeb" xml:space="preserve"><value>Wyszukaj w Internecie</value></data>
+  <data name="Menu_AddExclusion" xml:space="preserve"><value>Dodaj do wykluczeń</value></data>
+  <data name="Node_FileCount" xml:space="preserve"><value>pliki: {0}</value></data>
+  <data name="Node_Review" xml:space="preserve"><value>do sprawdzenia</value></data>
+  <data name="Node_Expert" xml:space="preserve"><value>ekspert</value></data>
+  <data name="Node_Busy" xml:space="preserve"><value>zajęte - zamknij program, aby wyczyścić</value></data>
+  <data name="Skip_TooRecent" xml:space="preserve"><value>zbyt nowe (używane w ciągu ostatnich {0} dni)</value></data>
+  <data name="Skip_Protected" xml:space="preserve"><value>chroniony typ pliku</value></data>
+  <data name="Skip_Excluded" xml:space="preserve"><value>na liście wykluczeń</value></data>
+  <data name="Skip_Reparse" xml:space="preserve"><value>punkt ponownej analizy / link symboliczny</value></data>
+  <data name="Skip_OutsideRoot" xml:space="preserve"><value>poza dozwolonymi folderami</value></data>
+  <data name="Skip_Missing" xml:space="preserve"><value>już nie istnieją</value></data>
+  <data name="Skip_InUse" xml:space="preserve"><value>używane przez inny proces</value></data>
+  <data name="Skip_AccessDenied" xml:space="preserve"><value>odmowa dostępu</value></data>
+  <data name="Skip_OtherErrors" xml:space="preserve"><value>inne błędy</value></data>
+  <data name="Notify_ElevatedMoved" xml:space="preserve"><value>Do kwarantanny przeniesiono {0} z {1} plików wymagających uprawnień administratora, {2}.</value></data>
+  <data name="Notify_ElevatedLeft" xml:space="preserve"><value>Pozostawiono na miejscu: {0} (szczegóły w autoclean.log).</value></data>
+  <data name="Notify_LowSpace" xml:space="preserve"><value>Mało miejsca na dysku: {0}</value></data>
+  <data name="Notify_AutoClean" xml:space="preserve"><value>Pliki przeniesione do kwarantanny: {0}, {1}.</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="Settings_Enable" xml:space="preserve"><value>Włącz automatyczne czyszczenie według harmonogramu</value></data>
+  <data name="Settings_OlderThan" xml:space="preserve"><value>Czyść pliki starsze niż</value></data>
+  <data name="Settings_CustomDays" xml:space="preserve"><value>Własna liczba dni</value></data>
+  <data name="Settings_Frequency" xml:space="preserve"><value>Częstotliwość</value></data>
+  <data name="Settings_DayOfWeek" xml:space="preserve"><value>Dzień tygodnia</value></data>
+  <data name="Settings_Notify" xml:space="preserve"><value>Pokazuj powiadomienie po każdym uruchomieniu</value></data>
+  <data name="Settings_Maintenance" xml:space="preserve"><value>Comiesięczne czyszczenie magazynu składników (DISM)</value></data>
+  <data name="Settings_DayOfMonth" xml:space="preserve"><value>Dzień miesiąca (1-28)</value></data>
+  <data name="Settings_LowSpace" xml:space="preserve"><value>Ostrzegaj, gdy wolnego miejsca jest mniej niż (%)</value></data>
+  <data name="Settings_Winapp2" xml:space="preserve"><value>Używaj reguł winapp2.ini z folderu reguł (poziom „do sprawdzenia”)</value></data>
+  <data name="Settings_QuarantineDays" xml:space="preserve"><value>Przechowuj wyczyszczone pliki w kwarantannie (dni)</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Język</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Zapisz</value></data>
+  <data name="Settings_Saved" xml:space="preserve"><value>Ustawienia zapisano, zadania harmonogramu zostały zaktualizowane.</value></data>
+  <data name="Settings_SavedNoSchedule" xml:space="preserve"><value>Ustawienia zapisano. Automatyczne czyszczenie według harmonogramu jest wyłączone.</value></data>
+  <data name="Err_CustomDays" xml:space="preserve"><value>Liczba dni musi być dodatnią liczbą całkowitą.</value></data>
+  <data name="Err_QuarantineDays" xml:space="preserve"><value>Okres kwarantanny musi być dodatnią liczbą całkowitą.</value></data>
+  <data name="Err_LowSpace" xml:space="preserve"><value>Próg wolnego miejsca musi być liczbą całkowitą od 0 do 99.</value></data>
+  <data name="Err_DayOfMonth" xml:space="preserve"><value>Dzień miesiąca musi być liczbą całkowitą od 1 do 28.</value></data>
+  <data name="Err_TaskFailed" xml:space="preserve"><value>Nie udało się zaktualizować zadań harmonogramu.</value></data>
+  <data name="Quar_Title" xml:space="preserve"><value>Kwarantanna i historia</value></data>
+  <data name="Quar_Restore" xml:space="preserve"><value>Przywróć zaznaczone</value></data>
+  <data name="Quar_Summary" xml:space="preserve"><value>W kwarantannie: plików - {0}, {1}. Pliki są trwale usuwane {2} dni po wyczyszczeniu.</value></data>
+  <data name="Quar_Restored" xml:space="preserve"><value>Przywrócone pliki: {0}.</value></data>
+  <data name="Quar_NotRestored" xml:space="preserve"><value>Nie przywrócono: {0}</value></data>
+  <data name="Quar_Operation" xml:space="preserve"><value>{0}  {1}  -  pliki: {2}</value></data>
+  <data name="Quar_Restorable" xml:space="preserve"><value>można przywrócić: {0}</value></data>
+  <data name="Start_Title" xml:space="preserve"><value>Autostart</value></data>
+  <data name="Start_Tip" xml:space="preserve"><value>Uruchamiaj razem z systemem Windows</value></data>
+  <data name="Start_Summary" xml:space="preserve"><value>Uruchamiane razem z systemem Windows: {0} z {1}. Odznacz pozycję, aby ją wyłączyć - pozostanie na miejscu i w każdej chwili można ją włączyć ponownie.</value></data>
+  <data name="Start_Failed" xml:space="preserve"><value>Nie udało się zmienić pozycji „{0}”.</value></data>
+  <data name="Start_Missing" xml:space="preserve"><value>nie znaleziono pliku wykonywalnego</value></data>
+  <data name="Start_UnknownPublisher" xml:space="preserve"><value>nieznany wydawca</value></data>
+  <data name="Start_KindRegistry" xml:space="preserve"><value>Rejestr</value></data>
+  <data name="Start_KindFolder" xml:space="preserve"><value>Folder Autostart</value></data>
+  <data name="Start_KindTask" xml:space="preserve"><value>Harmonogram zadań</value></data>
+  <data name="Disk_Title" xml:space="preserve"><value>Miejsce na dysku</value></data>
+  <data name="Disk_Folder" xml:space="preserve"><value>Folder:</value></data>
+  <data name="Disk_Browse" xml:space="preserve"><value>Przeglądaj...</value></data>
+  <data name="Disk_Largest" xml:space="preserve"><value>Największe foldery i pliki</value></data>
+  <data name="Disk_Old" xml:space="preserve"><value>Stare pliki (90+ dni)</value></data>
+  <data name="Disk_Duplicates" xml:space="preserve"><value>Duplikaty</value></data>
+  <data name="Disk_ViewOnly" xml:space="preserve"><value>Tylko podgląd - nic tutaj nie jest usuwane automatycznie.</value></data>
+  <data name="Disk_LargestFolders" xml:space="preserve"><value>Największe foldery w {0}</value></data>
+  <data name="Disk_LargestFiles" xml:space="preserve"><value>Największe pliki</value></data>
+  <data name="Disk_OldSummary" xml:space="preserve"><value>Pliki niezmieniane od {0}+ dni: {1}, łączny rozmiar {2}</value></data>
+  <data name="Disk_DuplicatesSummary" xml:space="preserve"><value>Grupy identycznych plików (od 1 MB): {0}, nadmiarowe kopie zajmują {1}</value></data>
+  <data name="Disk_DuplicateGroup" xml:space="preserve"><value>Kopie: {0}, każda po {1}</value></data>
+  <data name="Disk_NoFolder" xml:space="preserve"><value>Taki folder nie istnieje.</value></data>
+  <data name="Disk_Modified" xml:space="preserve"><value>zmodyfikowano {0}</value></data>
+  <data name="Left_Title" xml:space="preserve"><value>Pozostałości po programach</value></data>
+  <data name="Left_Move" xml:space="preserve"><value>Przenieś zaznaczone foldery do kwarantanny</value></data>
+  <data name="Left_Folders" xml:space="preserve"><value>Foldery, które nie należą do żadnego zainstalowanego programu</value></data>
+  <data name="Left_Services" xml:space="preserve"><value>Usługi, których program nie istnieje (tylko podgląd)</value></data>
+  <data name="Left_Tasks" xml:space="preserve"><value>Zaplanowane zadania, których program nie istnieje (tylko podgląd)</value></data>
+  <data name="Left_Shortcuts" xml:space="preserve"><value>Skróty, których element docelowy nie istnieje (tylko podgląd)</value></data>
+  <data name="Left_None" xml:space="preserve"><value>Nie znaleziono pozostałości.</value></data>
+  <data name="Left_Hint" xml:space="preserve"><value>To kandydaci, a nie wyrok - sprawdź każdą pozycję, zanim cokolwiek zrobisz. Nic nie jest zaznaczane ani usuwane automatycznie.</value></data>
+  <data name="Left_NoneSelected" xml:space="preserve"><value>Nie wybrano żadnych folderów.</value></data>
+  <data name="Left_Confirm" xml:space="preserve"><value>Przenieść pliki z zaznaczonych folderów ({0}, {1}) do kwarantanny?</value></data>
+  <data name="Left_ConfirmNote" xml:space="preserve"><value>Można je przywrócić przez {0} dni. Programy, skrypty i pliki używane w ciągu ostatnich {1} dni pozostaną na miejscu.</value></data>
+  <data name="Left_Result" xml:space="preserve"><value>Pliki przeniesione do kwarantanny: {0}.\nPozostawiono na miejscu: {1}.</value></data>
+  <data name="Left_FolderDetail" xml:space="preserve"><value>nie pasuje do żadnego zainstalowanego programu, bez zmian od {0}+ dni</value></data>
+  <data name="Left_MissingDetail" xml:space="preserve"><value>brak: {0}</value></data>
+  <data name="Tools_Title" xml:space="preserve"><value>Narzędzia systemowe</value></data>
+  <data name="Tools_Ready" xml:space="preserve"><value>Gotowe.</value></data>
+  <data name="Tools_Check" xml:space="preserve"><value>Sprawdź system (DISM + SFC)</value></data>
+  <data name="Tools_CheckTip" xml:space="preserve"><value>Naprawia magazyn składników systemu Windows, a potem sprawdza pliki systemowe. Może potrwać 15-40 minut.</value></data>
+  <data name="Tools_CheckExplain" xml:space="preserve"><value>Zostaną uruchomione polecenia DISM /RestoreHealth, a następnie sfc /scannow. Może to potrwać 15-40 minut i wymaga połączenia z Internetem.</value></data>
+  <data name="Tools_Component" xml:space="preserve"><value>Oczyść magazyn składników</value></data>
+  <data name="Tools_ComponentTip" xml:space="preserve"><value>DISM /Online /Cleanup-Image /StartComponentCleanup - usuwa zastąpione składniki systemu Windows.</value></data>
+  <data name="Tools_ComponentExplain" xml:space="preserve"><value>DISM usunie zastąpione składniki systemu Windows. Potem nie będzie już można odinstalować dotychczas zainstalowanych aktualizacji.</value></data>
+  <data name="Tools_UpdateCache" xml:space="preserve"><value>Wyczyść pamięć podręczną Windows Update</value></data>
+  <data name="Tools_UpdateCacheTip" xml:space="preserve"><value>Zatrzymuje usługę Windows Update, przenosi stare pobrane pliki aktualizacji do kwarantanny i ponownie uruchamia usługę.</value></data>
+  <data name="Tools_UpdateCacheExplain" xml:space="preserve"><value>Usługa Windows Update zostanie na chwilę zatrzymana, a stare pobrane pliki aktualizacji trafią do kwarantanny.</value></data>
+  <data name="Tools_UpdateCacheResult" xml:space="preserve"><value>Pliki przeniesione do kwarantanny: {0}, {1}.\nPozostawiono na miejscu: {2} (zbyt nowe, chronione lub w użyciu).</value></data>
+  <data name="Tools_RecycleBin" xml:space="preserve"><value>Opróżnij Kosz</value></data>
+  <data name="Tools_RecycleBinSize" xml:space="preserve"><value>Opróżnij Kosz ({0})</value></data>
+  <data name="Tools_RecycleBinExplain" xml:space="preserve"><value>Cała zawartość Kosza na wszystkich dyskach zostanie trwale usunięta. Tej operacji nie można cofnąć.</value></data>
+  <data name="Tools_RecycleBinDone" xml:space="preserve"><value>Kosz jest pusty.</value></data>
+  <data name="Tools_RecycleBinFailed" xml:space="preserve"><value>System Windows nie mógł opróżnić Kosza.</value></data>
+  <data name="Tools_WindowsOld" xml:space="preserve"><value>Usuń Windows.old (ekspert)</value></data>
+  <data name="Tools_WindowsOldTip" xml:space="preserve"><value>Usuwa poprzednią instalację systemu Windows. Nie będzie już można do niej wrócić.</value></data>
+  <data name="Tools_WindowsOldExplain" xml:space="preserve"><value>Folder {0} zawiera poprzednią instalację systemu Windows. Po jego usunięciu nie będzie można wrócić do tamtej wersji ani przywrócić go z kwarantanny.</value></data>
+  <data name="Tools_WindowsOldRemoved" xml:space="preserve"><value>Folder Windows.old został usunięty.</value></data>
+  <data name="Tools_WindowsOldStill" xml:space="preserve"><value>Folder Windows.old nadal istnieje.</value></data>
+  <data name="Tools_RestorePoint" xml:space="preserve"><value>Utwórz punkt przywracania</value></data>
+  <data name="Tools_RestorePointExplain" xml:space="preserve"><value>Tworzy punkt przywracania systemu. System Windows pozwala na jeden punkt na 24 godziny, a w pozostałych przypadkach pomija żądanie.</value></data>
+  <data name="Tools_RestorePointDone" xml:space="preserve"><value>Wysłano żądanie utworzenia punktu przywracania.</value></data>
+  <data name="Tools_RestorePointFailed" xml:space="preserve"><value>System Windows odmówił utworzenia punktu przywracania. Ochrona systemu może być wyłączona dla dysku systemowego.</value></data>
+  <data name="Tools_RestorePointFirst" xml:space="preserve"><value>Najpierw zostanie utworzony punkt przywracania.</value></data>
+  <data name="Tools_RestorePointContinue" xml:space="preserve"><value>Nie udało się utworzyć punktu przywracania (ochrona systemu może być wyłączona).\n\nKontynuować bez niego?</value></data>
+  <data name="Tools_StillRunning" xml:space="preserve"><value>Operacja jeszcze trwa. Najpierw ją anuluj.</value></data>
+  <data name="Tools_ToolCompleted" xml:space="preserve"><value>{0}: zakończono</value></data>
+  <data name="Tools_ToolProblem" xml:space="preserve"><value>{0}: zgłoszono problem (kod zakończenia {1})</value></data>
+  <data name="Tools_HealthChecking" xml:space="preserve"><value>Kondycja dysków: sprawdzanie...</value></data>
+  <data name="Tools_HealthUnavailable" xml:space="preserve"><value>Kondycja dysków: niedostępna w tym systemie</value></data>
+  <data name="Tools_Health" xml:space="preserve"><value>Kondycja dysków: {0}</value></data>
+  <data name="Tools_HealthWarning" xml:space="preserve"><value>UWAGA: dysk zgłasza problemy. Wykonaj kopię zapasową danych już teraz.</value></data>
+  <data name="Tools_StartupCount" xml:space="preserve"><value>Włączone programy w autostarcie: {0}</value></data>
+</root>

@@ -10,6 +10,7 @@ public partial class App : System.Windows.Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        L.Apply(SettingsService.Load().Language);
 
         if (e.Args.Contains(CommandLineSwitches.ElevatedClean) && e.Args.Length >= 2)
         {
@@ -86,10 +87,9 @@ public partial class App : System.Windows.Application
             CleanupLog.Write("elevated", result);
 
             // Report against the number the main window announced, so the two always reconcile
-            var message = $"Moved {result.DeletedCount} of {request.FilePaths.Count} administrator-protected files to quarantine, " +
-                          $"{SizeFormatter.Format(result.FreedBytes)}.";
+            var message = L.T("Notify_ElevatedMoved", result.DeletedCount, request.FilePaths.Count, SizeFormatter.Format(result.FreedBytes));
             if (result.SkippedCount > 0)
-                message += $" {result.SkippedCount} were left in place (details in autoclean.log).";
+                message += " " + L.T("Notify_ElevatedLeft", result.SkippedCount);
 
             TryNotify(message);
         }
@@ -107,10 +107,10 @@ public partial class App : System.Windows.Application
         // Low disk space is worth interrupting for even when routine notifications are off
         var lowDrives = DiskAnalyzer.LowSpaceDrives(settings.LowSpaceThresholdPercent);
         if (lowDrives.Count > 0)
-            TryNotify("Low disk space: " + DiskAnalyzer.LowSpaceMessage(lowDrives));
+            TryNotify(L.T("Notify_LowSpace", L.LowSpace(lowDrives)));
 
         if (settings.NotifyOnComplete)
-            TryNotify($"Moved {result.DeletedCount} files to quarantine, {SizeFormatter.Format(result.FreedBytes)}.");
+            TryNotify(L.T("Notify_AutoClean", result.DeletedCount, SizeFormatter.Format(result.FreedBytes)));
     }
 
     // Runs a command-line report: everything is echoed to the calling console when there is one
