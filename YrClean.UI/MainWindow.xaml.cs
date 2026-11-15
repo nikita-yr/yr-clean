@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private int _minAgeDays = 14;
     private int _quarantineDays = 7;
     private List<string> _excludedPaths = new();
+    private Dictionary<string, int> _minAgeOverrides = new();
     private List<string> _lastScanRoots = new();
     private List<CacheSourceNode> _lastScanNodes = new();
 
@@ -36,25 +37,11 @@ public partial class MainWindow : Window
         _excludedPaths = settings.ExcludedPaths;
         CleanButton.Content = $"Clean > {_minAgeDays} days";
 
-        var scanner = new FolderScanner();
-        var sources = CacheSourceProvider.GetKnownSources().Concat(AutoDiscoveryScanner.Discover());
-        var nodes = new List<CacheSourceNode>();
-        var roots = new List<string>();
-
-        foreach (var source in sources)
-        {
-            var resolvedPaths = source.ResolvePaths(settings.ExcludedPaths);
-            if (resolvedPaths.Count == 0)
-                continue;
-
-            roots.AddRange(resolvedPaths);
-            var allGroups = resolvedPaths.SelectMany(path => scanner.ScanGrouped(path, settings.ExcludedPaths)).ToList();
-
-            if (allGroups.Sum(group => group.TotalSizeBytes) == 0)
-                continue;
-
-            nodes.Add(new CacheSourceNode(source, allGroups, resolvedPaths[0]));
-        }
+        var sources = RuleEngine.LoadRelevant(settings).Concat(AutoDiscoveryScanner.Discover());
+        var scans = SourceScanner.Scan(sources, settings.ExcludedPaths);
+        var nodes = scans.Select(scan => new CacheSourceNode(scan)).ToList();
+        var roots = scans.Where(scan => !scan.Busy).SelectMany(scan => scan.Roots).ToList();
+        _minAgeOverrides = SourceScanner.MinAgeOverrides(scans);
 
         _lastScanNodes = nodes.OrderByDescending(node => node.TotalSizeBytes).ToList();
         _lastScanRoots = roots;
@@ -86,7 +73,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays, _excludedPaths);
+        var classification = SafeDeleteService.Classify(selectedFiles, _lastScanRoots, _minAgeDays, _excludedPaths, _minAgeOverrides);
         if (classification.TotalCount == 0)
         {
             ShowInfo(
@@ -103,7 +90,7 @@ public partial class MainWindow : Window
         {
             // Everything is deleted in this process, so the summary reports exact final numbers.
             var allFiles = classification.DeletableNow.Concat(classification.NeedsAdmin).ToList();
-            var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays, _excludedPaths);
+            var result = SafeDeleteService.DeleteFiles(allFiles, _lastScanRoots, _minAgeDays, _excludedPaths, minAgeOverrides: _minAgeOverrides);
             CleanupLog.Write("manual", result);
 
             ShowInfo(BuildDeleteSummary(result, allFiles.Count), "Cleanup complete");
@@ -111,7 +98,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var partialResult = SafeDeleteService.DeleteFiles(classification.DeletableNow, _lastScanRoots, _minAgeDays, _excludedPaths);
+        var partialResult = SafeDeleteService.DeleteFiles(classification.DeletableNow, _lastScanRoots, _minAgeDays, _excludedPaths, minAgeOverrides: _minAgeOverrides);
         CleanupLog.Write("manual", partialResult);
 
         var adminCount = classification.NeedsAdmin.Count;
@@ -182,7 +169,8 @@ public partial class MainWindow : Window
             FilePaths = filePaths,
             AllowedRoots = _lastScanRoots,
             ExcludedPaths = _excludedPaths,
-            MinAgeDays = _minAgeDays
+            MinAgeDays = _minAgeDays,
+            MinAgeOverrides = _minAgeOverrides
         };
         var manifestPath = PendingCleanRequestService.Save(request);
 

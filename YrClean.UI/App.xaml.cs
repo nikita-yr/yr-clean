@@ -56,7 +56,8 @@ public partial class App : System.Windows.Application
                 request.FilePaths,
                 request.AllowedRoots,
                 request.MinAgeDays,
-                request.ExcludedPaths);
+                request.ExcludedPaths,
+                minAgeOverrides: request.MinAgeOverrides);
             CleanupLog.Write("elevated", result);
 
             // Report against the number the main window announced, so the two always reconcile

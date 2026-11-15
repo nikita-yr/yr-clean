@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "rules": [
+    { "id": "user-temp", "name": "User Temp", "category": "System", "level": "safe", "paths": ["%TEMP%"] },
+    { "id": "system-temp", "name": "System Temp", "category": "System", "level": "safe", "paths": ["%SystemRoot%\\Temp"] },
+    { "id": "prefetch", "name": "Prefetch", "category": "System", "level": "expert", "paths": ["%SystemRoot%\\Prefetch"] },
+    {
+      "id": "wer-reports", "name": "Windows Error Reporting", "category": "System", "level": "safe",
+      "paths": [
+        "%ProgramData%\\Microsoft\\Windows\\WER\\ReportArchive",
+        "%ProgramData%\\Microsoft\\Windows\\WER\\ReportQueue",
+        "%LocalAppData%\\Microsoft\\Windows\\WER\\ReportArchive",
+        "%LocalAppData%\\Microsoft\\Windows\\WER\\ReportQueue"
+      ]
+    },
+    { "id": "crash-dumps", "name": "Application crash dumps", "category": "System", "level": "safe", "paths": ["%LocalAppData%\\CrashDumps"] },
+    { "id": "minidump", "name": "System minidumps", "category": "System", "level": "safe", "paths": ["%SystemRoot%\\Minidump"] },
+    { "id": "live-kernel-reports", "name": "Live kernel reports", "category": "System", "level": "review", "paths": ["%SystemRoot%\\LiveKernelReports"] },
+    {
+      "id": "thumbnail-cache", "name": "Thumbnail cache", "category": "System", "level": "safe",
+      "paths": [{ "path": "%LocalAppData%\\Microsoft\\Windows\\Explorer", "masks": ["thumbcache_*.db", "iconcache_*.db"], "recurse": false }]
+    },
+    {
+      "id": "delivery-optimization", "name": "Delivery Optimization cache", "category": "System", "level": "review",
+      "paths": ["%SystemRoot%\\ServiceProfiles\\NetworkService\\AppData\\Local\\Microsoft\\Windows\\DeliveryOptimization\\Cache"]
+    },
+
+    { "id": "nvidia-gl", "name": "NVIDIA Shader Cache (GL)", "category": "GPU", "level": "safe", "paths": ["%LocalAppData%\\NVIDIA\\GLCache"] },
+    { "id": "nvidia-dx", "name": "NVIDIA Shader Cache (DX)", "category": "GPU", "level": "safe", "paths": ["%LocalAppData%\\NVIDIA\\DXCache"] },
+    { "id": "amd-dx", "name": "AMD Shader Cache (DX)", "category": "GPU", "level": "safe", "paths": ["%LocalAppData%\\AMD\\DxCache"] },
+    { "id": "amd-gl", "name": "AMD Shader Cache (GL)", "category": "GPU", "level": "safe", "paths": ["%LocalAppData%\\AMD\\GLCache"] },
+    { "id": "amd-vk", "name": "AMD Shader Cache (Vulkan)", "category": "GPU", "level": "safe", "paths": ["%LocalAppData%\\AMD\\VkCache"] },
+
+    { "id": "discord-cache", "name": "Discord Cache", "category": "Messengers", "level": "safe", "paths": ["%AppData%\\discord\\Cache"] },
+    { "id": "discord-code-cache", "name": "Discord Code Cache", "category": "Messengers", "level": "safe", "paths": ["%AppData%\\discord\\Code Cache"] },
+
+    {
+      "id": "chromium", "name": "{name} Cache", "category": "Browsers", "level": "safe",
+      "paths": [
+        "{root}\\*\\Cache\\Cache_Data",
+        "{root}\\*\\Code Cache",
+        "{root}\\*\\GPUCache",
+        "{root}\\Cache\\Cache_Data",
+        "{root}\\Code Cache",
+        "{root}\\GPUCache",
+        "{root}\\ShaderCache",
+        "{root}\\GrShaderCache"
+      ],
+      "variants": [
+        { "id": "chrome", "name": "Chrome", "root": "%LocalAppData%\\Google\\Chrome\\User Data", "process": ["chrome"] },
+        { "id": "edge", "name": "Edge", "root": "%LocalAppData%\\Microsoft\\Edge\\User Data", "process": ["msedge"] },
+        { "id": "brave", "name": "Brave", "root": "%LocalAppData%\\BraveSoftware\\Brave-Browser\\User Data", "process": ["brave"] },
+        { "id": "opera", "name": "Opera", "root": "%LocalAppData%\\Opera Software\\Opera Stable", "process": ["opera"] },
+        { "id": "vivaldi", "name": "Vivaldi", "root": "%LocalAppData%\\Vivaldi\\User Data", "process": ["vivaldi"] },
+        { "id": "yandex", "name": "Yandex Browser", "root": "%LocalAppData%\\Yandex\\YandexBrowser\\User Data", "process": ["browser"] }
+      ]
+    },
+    {
+      "id": "firefox", "name": "Firefox Cache", "category": "Browsers", "level": "safe", "process": ["firefox"],
+      "paths": [
+        "%LocalAppData%\\Mozilla\\Firefox\\Profiles\\*\\cache2\\entries",
+        "%LocalAppData%\\Mozilla\\Firefox\\Profiles\\*\\startupCache"
+      ]
+    },
+
+    { "id": "steam-htmlcache", "name": "Steam Browser Cache", "category": "Games", "level": "safe", "paths": ["%LocalAppData%\\Steam\\htmlcache\\Cache"] },
+
+    { "id": "gradle-caches", "name": "Gradle caches", "category": "Developer", "level": "review", "paths": ["%UserProfile%\\.gradle\\caches"] },
+    { "id": "maven-repository", "name": "Maven local repository", "category": "Developer", "level": "review", "paths": ["%UserProfile%\\.m2\\repository"] },
+    { "id": "npm-cache", "name": "npm cache", "category": "Developer", "level": "review", "paths": ["%LocalAppData%\\npm-cache", "%AppData%\\npm-cache"] },
+    { "id": "pip-cache", "name": "pip cache", "category": "Developer", "level": "review", "paths": ["%LocalAppData%\\pip\\cache"] },
+    {
+      "id": "nuget-cache", "name": "NuGet HTTP cache", "category": "Developer", "level": "review",
+      "paths": ["%LocalAppData%\\NuGet\\v3-cache", "%LocalAppData%\\NuGet\\plugins-cache"]
+    },
+    { "id": "docker-logs", "name": "Docker Desktop logs", "category": "Developer", "level": "review", "paths": ["%LocalAppData%\\Docker\\log", "%AppData%\\Docker\\log"] }
+  ]
+}

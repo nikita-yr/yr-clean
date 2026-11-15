@@ -5,7 +5,8 @@ namespace YrClean.Core.Services;
 public class FolderScanner
 {
     // Folders listed in excludedPaths are not entered at all.
-    public List<CacheEntry> Scan(string rootPath, IEnumerable<string>? excludedPaths = null)
+    public List<CacheEntry> Scan(
+        string rootPath, IEnumerable<string>? excludedPaths = null, IReadOnlyCollection<string>? masks = null, bool recurse = true)
     {
         var results = new List<CacheEntry>();
         var excluded = (excludedPaths ?? Enumerable.Empty<string>()).ToList();
@@ -30,6 +31,9 @@ public class FolderScanner
                     try
                     {
                         var info = new FileInfo(filePath);
+                        if (masks is { Count: > 0 } && !masks.Any(m => System.IO.Enumeration.FileSystemName.MatchesSimpleExpression(m, info.Name)))
+                            continue;
+
                         if (info.Length == 0)
                             continue;
 
@@ -48,6 +52,9 @@ public class FolderScanner
                         continue;
                     }
                 }
+
+                if (!recurse)
+                    break;
 
                 foreach (var subdirectory in Directory.EnumerateDirectories(directory))
                 {
@@ -78,9 +85,10 @@ public class FolderScanner
     }
 
     // Groups files by their top-level subfolder under rootPath, sorted by size descending
-    public List<CacheGroup> ScanGrouped(string rootPath, IEnumerable<string>? excludedPaths = null)
+    public List<CacheGroup> ScanGrouped(
+        string rootPath, IEnumerable<string>? excludedPaths = null, IReadOnlyCollection<string>? masks = null, bool recurse = true)
     {
-        var entries = Scan(rootPath, excludedPaths);
+        var entries = Scan(rootPath, excludedPaths, masks, recurse);
         var groups = new Dictionary<string, CacheGroup>();
 
         foreach (var entry in entries)

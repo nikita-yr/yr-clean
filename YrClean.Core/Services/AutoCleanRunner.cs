@@ -5,23 +5,21 @@ namespace YrClean.Core.Services;
 public static class AutoCleanRunner
 {
     // The unattended (--auto-clean) run: quarantines everything old enough in the enabled Safe
-    // sources. Review and Expert sources, including auto-discovered folders, are manual-only.
+    // rules. Review and Expert rules, including auto-discovered folders, are manual-only.
     public static DeleteResult Run(CleanSettings settings)
     {
         QuarantineService.Default.Purge(settings.QuarantineDays);
 
-        var scanner = new FolderScanner();
-        var roots = CacheSourceProvider.GetKnownSources()
-            .Where(s => s.Level == RuleLevel.Safe && !settings.DisabledSourceNames.Contains(s.Name))
-            .SelectMany(s => s.ResolvePaths(settings.ExcludedPaths))
-            .ToList();
+        var rules = RuleEngine.LoadRelevant(settings)
+            .Where(s => s.Level == RuleLevel.Safe && !settings.DisabledSourceNames.Contains(s.Name));
+        var scans = SourceScanner.Scan(rules, settings.ExcludedPaths).Where(s => !s.Busy).ToList();
 
-        var allFiles = roots
-            .SelectMany(root => scanner.Scan(root, settings.ExcludedPaths))
-            .Select(f => f.FullPath)
-            .ToList();
-
-        var result = SafeDeleteService.DeleteFiles(allFiles, roots, settings.MinAgeDays, settings.ExcludedPaths);
+        var result = SafeDeleteService.DeleteFiles(
+            scans.SelectMany(s => s.Files).ToList(),
+            scans.SelectMany(s => s.Roots).ToList(),
+            settings.MinAgeDays,
+            settings.ExcludedPaths,
+            minAgeOverrides: SourceScanner.MinAgeOverrides(scans));
         CleanupLog.Write("scheduled", result);
         return result;
     }

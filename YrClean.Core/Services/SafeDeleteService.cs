@@ -35,10 +35,11 @@ public static class SafeDeleteService
         IEnumerable<string> filePaths,
         IEnumerable<string> allowedRoots,
         int minAgeDays,
-        IEnumerable<string>? excludedPaths = null)
+        IEnumerable<string>? excludedPaths = null,
+        IReadOnlyDictionary<string, int>? minAgeOverrides = null)
     {
         var result = new ClassificationResult();
-        var policy = new SafetyPolicy(allowedRoots, minAgeDays, excludedPaths);
+        var policy = new SafetyPolicy(allowedRoots, minAgeDays, excludedPaths, minAgeOverrides);
 
         foreach (var path in filePaths)
         {
@@ -82,10 +83,11 @@ public static class SafeDeleteService
         IEnumerable<string> allowedRoots,
         int minAgeDays,
         IEnumerable<string>? excludedPaths = null,
-        QuarantineService? quarantine = null)
+        QuarantineService? quarantine = null,
+        IReadOnlyDictionary<string, int>? minAgeOverrides = null)
     {
         var result = new DeleteResult();
-        var policy = new SafetyPolicy(allowedRoots, minAgeDays, excludedPaths);
+        var policy = new SafetyPolicy(allowedRoots, minAgeDays, excludedPaths, minAgeOverrides);
         using var batch = (quarantine ?? QuarantineService.Default).BeginBatch();
 
         foreach (var path in filePaths)
@@ -154,10 +156,13 @@ public static class SafeDeleteService
     {
         private readonly List<string> _roots;
         private readonly List<string> _excluded;
-        private readonly DateTime _cutoff;
+        private readonly int _minAgeDays;
+        private readonly Dictionary<string, int> _minAgeByRoot = new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, bool> _reparseByFolder = new(StringComparer.OrdinalIgnoreCase);
 
-        public SafetyPolicy(IEnumerable<string> allowedRoots, int minAgeDays, IEnumerable<string>? excludedPaths)
+        public SafetyPolicy(
+            IEnumerable<string> allowedRoots, int minAgeDays, IEnumerable<string>? excludedPaths,
+            IReadOnlyDictionary<string, int>? minAgeOverrides)
         {
             // A root pointing at a protected location (System32, Program Files, a drive root, ...)
             // is dropped here, so no rule - built-in or downloaded - can make it deletable.
@@ -166,7 +171,9 @@ public static class SafeDeleteService
                 .Where(root => root.Length > 0 && !ProtectedLocations.IsForbiddenRoot(root))
                 .ToList();
             _excluded = (excludedPaths ?? Enumerable.Empty<string>()).ToList();
-            _cutoff = DateTime.Now.AddDays(-minAgeDays);
+            _minAgeDays = minAgeDays;
+            foreach (var (overrideRoot, days) in minAgeOverrides ?? new Dictionary<string, int>())
+                _minAgeByRoot[ProtectedLocations.Normalize(overrideRoot)] = days;
         }
 
         public SafetyCheck Check(FileInfo info)
@@ -198,11 +205,18 @@ public static class SafeDeleteService
             // 5: skip anything read or written more recently than the age threshold. Windows often
             // does not update last-access times, so the later of the two timestamps is used.
             var lastUsed = info.LastAccessTime > info.LastWriteTime ? info.LastAccessTime : info.LastWriteTime;
-            if (lastUsed > _cutoff)
+            if (lastUsed > DateTime.Now.AddDays(-MinAgeDaysFor(fullPath)))
                 return SafetyCheck.TooRecent;
 
             return SafetyCheck.Passed;
         }
+
+        // A rule may ask for a longer minimum age than the global one, never a shorter one
+        private int MinAgeDaysFor(string fullPath) => _minAgeByRoot
+            .Where(pair => ProtectedLocations.IsUnder(fullPath, pair.Key))
+            .Select(pair => pair.Value)
+            .Append(_minAgeDays)
+            .Max();
 
         private bool FolderHasReparsePoint(string folder, string root)
         {

@@ -1,7 +1,7 @@
 <Window x:Class="YrClean.UI.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Schedule settings" Height="480" Width="360"
+        Title="Schedule settings" Height="510" Width="400"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Background="#1E1E1E"
         Foreground="#E1E1E1">
@@ -61,6 +61,10 @@
         </ComboBox>
 
         <CheckBox Name="NotifyCheck" Content="Show a notification after each run" Margin="0,16,0,0"/>
+
+        <CheckBox Name="UseWinapp2Check"
+                  Content="Use winapp2.ini rules from the rules folder (review level)"
+                  Margin="0,10,0,0"/>
 
         <TextBlock Text="Keep cleaned files in quarantine (days)" Foreground="#E1E1E1" Margin="0,16,0,4"/>
         <TextBox Name="QuarantineDaysTextBox" Text="7"/>

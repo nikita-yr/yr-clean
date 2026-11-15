@@ -32,6 +32,7 @@ public partial class SettingsWindow : Window
         DayCombo.SelectedIndex = Array.IndexOf(DayComboOrder, _settings.WeeklyDay);
         NotifyCheck.IsChecked = _settings.NotifyOnComplete;
         QuarantineDaysTextBox.Text = _settings.QuarantineDays.ToString();
+        UseWinapp2Check.IsChecked = _settings.UseWinapp2;
         SelectAgeThreshold(_settings.MinAgeDays);
 
         UpdateFieldVisibility();
@@ -112,6 +113,7 @@ public partial class SettingsWindow : Window
         _settings.WeeklyDay = DayComboOrder[DayCombo.SelectedIndex];
         _settings.NotifyOnComplete = NotifyCheck.IsChecked == true;
         _settings.QuarantineDays = quarantineDays;
+        _settings.UseWinapp2 = UseWinapp2Check.IsChecked == true;
 
         SettingsService.Save(_settings);
 

@@ -74,7 +74,8 @@ public static class AutoDiscoveryScanner
         return new CacheSource
         {
             Name = label,
-            PathTemplate = fullPath,
+            Id = "auto:" + fullPath,
+            Paths = { new RulePath { Path = fullPath } },
             Category = "Auto-discovered",
             Level = RuleLevel.Review // a name heuristic is a guess, so a person must look first
         };

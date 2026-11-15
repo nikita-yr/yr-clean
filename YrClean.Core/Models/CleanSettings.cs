@@ -26,4 +26,7 @@ public class CleanSettings
 
     // Quarantined files are permanently deleted after this many days.
     public int QuarantineDays { get; set; } = 7;
+
+    // Load winapp2.ini from the user rules folder if present. Imported rules are always Review level.
+    public bool UseWinapp2 { get; set; } = false;
 }

@@ -7,6 +7,19 @@ public static class CleanupLog
 {
     private static readonly string LogPath = Path.Combine(AppPaths.DataDirectory, "autoclean.log");
 
+    public static void WriteLine(string message)
+    {
+        try
+        {
+            Directory.CreateDirectory(AppPaths.DataDirectory);
+            File.AppendAllLines(LogPath, new[] { $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}  {message}" });
+        }
+        catch (Exception)
+        {
+            // Logging must never crash a cleanup
+        }
+    }
+
     public static void Write(string runKind, DeleteResult result)
     {
         OperationJournal.Append(new JournalEntry(
