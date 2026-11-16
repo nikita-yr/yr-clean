@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:YrClean.UI"
         Title="YrClean"
-        Height="640" Width="960"
+        Height="660" Width="1040"
         Icon="app.ico"
         Background="{DynamicResource BackgroundMain}"
         Foreground="{DynamicResource TextPrimary}">
@@ -30,41 +30,41 @@
 
                 <Button Name="CleanButton"
                         Content="{local:Loc Main_Clean}"
-                        Width="150" Height="40"
+                        MinWidth="150" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         Click="CleanButton_Click"/>
 
                 <Button Name="QuarantineButton"
                         Content="{local:Loc Main_Quarantine}"
-                        Width="110" Height="40"
+                        MinWidth="90" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         ToolTip="{local:Loc Main_QuarantineTip}"
                         Click="QuarantineButton_Click"/>
 
                 <Button Name="ToolsButton"
                         Content="{local:Loc Main_System}"
-                        Width="90" Height="40"
+                        MinWidth="80" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         ToolTip="{local:Loc Main_SystemTip}"
                         Click="ToolsButton_Click"/>
 
                 <Button Name="StartupButton"
                         Content="{local:Loc Main_Startup}"
-                        Width="90" Height="40"
+                        MinWidth="80" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         ToolTip="{local:Loc Main_StartupTip}"
                         Click="StartupButton_Click"/>
 
                 <Button Name="DiskButton"
                         Content="{local:Loc Main_Disk}"
-                        Width="70" Height="40"
+                        MinWidth="70" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         ToolTip="{local:Loc Main_DiskTip}"
                         Click="DiskButton_Click"/>
 
                 <Button Name="LeftoversButton"
                         Content="{local:Loc Main_Leftovers}"
-                        Width="100" Height="40"
+                        MinWidth="90" Height="40" Padding="14,0"
                         Margin="0,0,10,0"
                         ToolTip="{local:Loc Main_LeftoversTip}"
                         Click="LeftoversButton_Click"/>
@@ -109,7 +109,7 @@
                 </ContextMenu>
 
                 <HierarchicalDataTemplate DataType="{x:Type local:CacheSourceNode}" ItemsSource="{Binding Children}">
-                    <Grid Width="640" ContextMenu="{StaticResource FolderContextMenu}">
+                    <Grid Width="840" ContextMenu="{StaticResource FolderContextMenu}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="CheckCol"/>
                             <ColumnDefinition Width="*"/>
@@ -124,7 +124,7 @@
                 </HierarchicalDataTemplate>
 
                 <HierarchicalDataTemplate DataType="{x:Type local:CacheGroupNode}" ItemsSource="{Binding Children}">
-                    <Grid Width="620" ContextMenu="{StaticResource FolderContextMenu}">
+                    <Grid Width="820" ContextMenu="{StaticResource FolderContextMenu}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="CheckCol"/>
                             <ColumnDefinition Width="*"/>
@@ -139,7 +139,7 @@
                 </HierarchicalDataTemplate>
 
                 <DataTemplate DataType="{x:Type local:CacheFileNode}">
-                    <Grid Width="600">
+                    <Grid Width="800">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="CheckCol"/>
                             <ColumnDefinition Width="*"/>

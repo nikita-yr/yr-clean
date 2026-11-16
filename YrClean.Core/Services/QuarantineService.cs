@@ -88,7 +88,7 @@ public sealed class QuarantineService
                 if (!File.Exists(source))
                     continue;
 
-                var destination = Path.GetFullPath(entry.OriginalPath);
+                var destination = ProtectedLocations.Normalize(entry.OriginalPath);
                 if (SafeDeleteService.RestoreBlockReason(destination) is { } reason)
                 {
                     result.Errors.Add($"{reason}: {destination}");

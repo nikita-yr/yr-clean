@@ -45,7 +45,7 @@ public static class SafeDeleteService
         {
             try
             {
-                var info = new FileInfo(Path.GetFullPath(path));
+                var info = new FileInfo(ProtectedLocations.Normalize(path));
                 var check = policy.Check(info);
                 if (check != SafetyCheck.Passed)
                 {
@@ -94,7 +94,7 @@ public static class SafeDeleteService
         {
             try
             {
-                var info = new FileInfo(Path.GetFullPath(path));
+                var info = new FileInfo(ProtectedLocations.Normalize(path));
                 var check = policy.Check(info);
                 if (check != SafetyCheck.Passed)
                 {

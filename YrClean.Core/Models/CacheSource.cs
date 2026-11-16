@@ -38,7 +38,7 @@ public class CacheSource
         return Paths
             .SelectMany(spec => PathWildcardResolver
                 .Resolve(Environment.ExpandEnvironmentVariables(spec.Path))
-                .Select(path => new ResolvedRoot(path, spec)))
+                .Select(path => new ResolvedRoot(ProtectedLocations.Normalize(path), spec)))
             .Where(root => !ExclusionFilter.IsExcluded(root.Path, excluded))
             .ToList();
     }

@@ -76,7 +76,39 @@ public static class ProtectedLocations
             Path.EndsInDirectorySeparator(folder) ? folder : folder + Path.DirectorySeparatorChar,
             StringComparison.OrdinalIgnoreCase);
 
-    // Keeps the separator on drive roots ("C:\"), where trimming it would change the meaning.
-    public static string Normalize(string path) =>
-        path.Length == 0 ? path : Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
+    // Canonical form used for every path comparison: absolute, no trailing separator (except on
+    // drive roots such as "C:\"), and with 8.3 short names expanded - otherwise "C:\PROGRA~1\App"
+    // would not be recognised as living under "C:\Program Files".
+    public static string Normalize(string path)
+    {
+        if (path.Length == 0)
+            return path;
+
+        var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
+        return full.Contains('~') ? ExpandShortNames(full) : full;
+    }
+
+    // GetLongPathName only works on paths that exist, so the longest existing parent is expanded
+    // and the not-yet-existing remainder is appended unchanged.
+    private static string ExpandShortNames(string fullPath)
+    {
+        var remainder = new Stack<string>();
+        for (var current = fullPath; !string.IsNullOrEmpty(current); current = Path.GetDirectoryName(current))
+        {
+            var buffer = new char[32768];
+            var length = GetLongPathName(current, buffer, buffer.Length);
+            if (length > 0 && length < buffer.Length)
+            {
+                var expanded = Path.TrimEndingDirectorySeparator(new string(buffer, 0, length));
+                return remainder.Aggregate(expanded, Path.Combine);
+            }
+
+            remainder.Push(Path.GetFileName(current));
+        }
+
+        return fullPath;
+    }
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+    private static extern int GetLongPathName(string shortPath, [System.Runtime.InteropServices.Out] char[] longPath, int bufferLength);
 }

@@ -1,10 +1,13 @@
+using YrClean.Core.Services;
+
 namespace YrClean.Tests;
 
 // A scratch cache root plus a private quarantine, removed after each test.
 public sealed class TempFolder : IDisposable
 {
-    public string Root { get; } = Directory.CreateDirectory(
-        Path.Combine(Path.GetTempPath(), "YrCleanTests", Guid.NewGuid().ToString("N"))).FullName;
+    // Canonical (long-name) form, like every path the app reports back
+    public string Root { get; } = ProtectedLocations.Normalize(Directory.CreateDirectory(
+        Path.Combine(Path.GetTempPath(), "YrCleanTests", Guid.NewGuid().ToString("N"))).FullName);
 
     public string CacheRoot => Directory.CreateDirectory(Path.Combine(Root, "cache")).FullName;
     public string QuarantineRoot => Path.Combine(Root, "quarantine");

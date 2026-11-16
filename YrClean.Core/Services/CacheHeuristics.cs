@@ -17,7 +17,9 @@ public static class CacheHeuristics
     private static readonly string[] ExclusionKeywords =
     {
         "config", "settings", "save", "saves", "profile", "profiles",
-        "credentials", "keys", "wallet", "identities", "account", "login data"
+        "credentials", "keys", "wallet", "identities", "account", "login data",
+        // installer caches: Windows needs them to repair or uninstall programs
+        "package cache", "installer"
     };
 
     public static bool IsExcluded(string fullPath)
